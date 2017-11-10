@@ -1,0 +1,127 @@
+#!/usr/bin/python
+import subprocess
+import boto3
+import platform
+
+print dir(subprocess)
+print dir(boto3)
+print dir(platform)
+
+print platform.release()
+print platform.linux_distribution()
+
+
+var1="VAAAAAAAAAAAR1"
+var2="VAAAAAAAAAAAR2"
+var3="A1B2C3D4E5F6"
+varx="XXX".join((var1, var2, var3))
+list1 = ["per1", 'per2', 'per3']
+index4per2 = list1.index("per2")
+
+print "This should be 1: %s " % (index4per2)
+print "Vaaaaar:  %s " % (var1)
+print var1+var2
+print " ".join((var1, var2))
+print " ".join((var1, var2)).find("R1")
+print " ".join((var1, var2)).find("V")
+print " ".join((var1, var2, var3))[" ".join((var1, var2, var3)).find("D4"):]
+print varx.replace("A", "a")
+
+for number in range(1,11):
+  if number % 2 > 0:
+    print number
+
+import subprocess
+users = {}
+ps_cmd = subprocess.check_output(['ps', '-ef'])
+print ps_cmd
+for line in ps_cmd.splitlines()[1:]:
+    user = line.split()[0]
+    if users.get(user):
+        users[user]+=1
+    else:
+        users[user]=1
+print "Active users on the system are "+ ','.join(users.keys())
+for user, process_count in users.items():
+    print "%s is running %s processes" % (user, process_count)
+
+print users
+
+def activeProcesses(lookup_user, lookup_cmd):
+  processes_running_all = 0
+  processes_running_searched = 0
+  for line in subprocess.check_output("ps -ef",shell=True).splitlines()[1:]:
+      user = line.split()[0]
+      if lookup_user == user:
+          processes_running_all+=1
+          if lookup_cmd in line:
+              processes_running_searched+=1
+  return processes_running_all, processes_running_searched
+procs_total, procs_searched = activeProcesses('root', 'tolga')
+print procs_total, procs_searched
+
+#exceptions
+try:
+    print 1/0
+except ZeroDivisionError:
+    print "Cannot divize by a zero"
+else:
+    print "All good"
+
+filename1 = '/home/tolga/tmp/auth.log'
+for line in open(filename1):
+    print line
+
+
+filename1 = '/home/tolga/tmp/auth.log'
+#with open(filename1, 'w+') as file_handle:
+with open(filename1, 'a') as file_handle:
+    file_handle.write("here is some text\n")
+
+class Car():
+    def __init__(self):
+        self.color = ''
+        print "car started"
+    def accel(self,speed):
+        print "speeding up to %s mph" % speed
+    def turn(self, direction):
+        print "turning " + direction
+    def stop(self):
+        print "stop"
+car1 = Car()
+car1.color='red'
+car1.accel(10)
+car1.turn('right')
+
+class RaceCar():
+    def __init__(self, color):
+        self.color = color
+        self.top_speed = 200
+        print "%s race car started with a top speed of %s" % (self.color, self.top_speed)
+    def accel(self, speed):
+        print "speeding up to %s mph very very fast" % speed
+car2 = RaceCar('blue')
+car2.color='red'
+car2.accel(10)
+#car2.turn('left')
+#car2.stop()
+
+#genetarotos
+def counter():
+    i=0
+    while True:
+        i+=1
+        yield i
+a = counter()
+print a
+print next(a)
+print next(a)
+print next(a)
+
+#regex
+import re
+line = "Oct 17:28:49 tolga sshd[2323] Failed password for root from 31.220.3.180 port 50388 ssh2"
+match = re.search('^(O.*)to.*(for\sr.*2)', line)
+print match
+print match.groups()
+
