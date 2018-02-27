@@ -1,0 +1,5 @@
+#!/usr/bin/python
+
+file1_ = open('linuxacademy/ezel.txt')
+print(file1_.read())
+file1_.close()

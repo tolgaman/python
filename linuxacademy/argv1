@@ -1,0 +1,7 @@
+#!/usr/bin/python 
+
+import sys
+print("First argument %s" %  sys.argv[0])
+print("First argument %s" %  sys.argv[1])
+print("First argument %s" %  sys.argv[2])
+

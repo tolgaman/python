@@ -1,0 +1,10 @@
+#!/usr/bin/python
+import os
+
+file1_ = open('linuxacademy/ezel.txt', 'r+')
+
+file1_.seek(-1,os.SEEK_END)
+file1_.write("\nBeast\n")
+file1_.write("Phoenix\n")
+print(file1_.read())
+file1_.close()

@@ -1,0 +1,13 @@
+#!/bin/python
+
+import subprocess
+
+code2 = subprocess.call(['ls', '-l'])
+print code2
+code = subprocess.call(['ls', '-Z'])
+
+if code == 0:   
+    print("command finished successfully")
+else: 
+    print("failed with code: %i" % code)
+
