@@ -1,0 +1,2466 @@
+docker exec -i -t b1a00b4e23cf /bin/bash
+java -jar jenkins-cli.jar -s http://localhost:49001/ shutdown --username tolga --password-file password.txt
+java -jar jenkins-cli.jar -s http://localhost:49001/ help --username tolga --password-file password.txt
+java -jar jenkins-cli.jar -s http://localhost:49001/ who-ami-i --username tolga --password-file password.txt
+java -jar jenkins-cli.jar -s http://localhost:49001/ who-am-i --username tolga --password-file password.txt
+Authenticated as: tolga
+Authorities:
+  authenticated
+Authenticated as: tolga
+Authorities:
+  authenticated
+docker exec -i -t b1a00b4e23cf /bin/bash
+--------------------------------------------
+docker run -i -t ubuntu:xenial /bin/bash
+docker restart 
+docker ps -a
+docker restart vigorous_jones
+docker ps 
+docker inspect ubuntu:xenial
+docker attach vigorous_jones
+docker run -itd ubuntu:xenial /bin/bash    (d stand for disconnected or daemonized)
+
+docker search ubuntu
+
+docker commit -m "Already installed SSH and created user" -a "tolga" backstabbling_easley tolga/ubusshd:v1
+docker images
+
+Docker File\:
+mkdir build
+cd build
+vim Dockerfile
+# This is a custom ubuntu image with SSH already installed
+FROM ubuntu:xenial
+MAINTAINER tolga <tolga@gmail.com?
+RUN apt-get update 
+RUN apt-get install -y telnet openssh-server 
+
+docker build -t="tolga/ubuntusshdonly:v2" .
+OR
+docker build -t="tolga/ubuntusshdonly:v2"  <  /location/of/the/docker/file
+
+docker images
+docker run -it tolga/ubuntusshdonly:v2 /bin/bash
+
+docker images
+docker run  -ut ubuntu:xenial /bin/bash
+#top
+exit
+docker logs CONTAINER_NAME
+docker exec CONTSAINER_NAME /bin/cat /etc/profile
+
+docker run ubuntu:xenial /bin/echo "Hello from this Container"
+
+docker run -d ubuntu:xenial /bin/bash -c "while true; do echo HELLO; sleep 1; done
+docker logs silly_kilby | wc -l
+docker logs silly_kilby | wc -l
+docker logs silly_kilby | wc -l
+
+Exposing the ports:
+docker pull nginx:latest # hub.docker.com gives extra info
+docker run -d nginx:latest
+docker ps
+docker inspect peaceful_almeida (this is for nginx)
+sudo yum install elinks
+elinks http://172.16.0.2  (may be different IP)
+elinks http://localhost
+
+----------------------------------------
+root@ubu4:/docker/Builds# cat Dockerfile 
+# Dockerfile based on the latest Centos 7 image - non-privileged user entry
+FROM centos:latest
+MAINTAINER tarzan@jungle.com
+
+RUN useradd -ms /bin/bash user
+USER user
+root@ubu4:/docker/Builds# docker ps -a | grep centos
+e0ab0d453d57        centos7/nonroot:v1   "/bin/bash"              24 minutes ago      Exited (127) 9 minutes ago                            kind_neumann
+root@ubu4:/docker/Builds# docker start kind_neumann
+kind_neumann
+root@ubu4:/docker/Builds# docker exec -u 0 -it  kind_neumann /bin/bash
+[root@e0ab0d453d57 /]# who
+[root@e0ab0d453d57 /]# whoami
+root
+[root@e0ab0d453d57 /]# 
+
+--------------
+root@ubu4:/docker/Builds/CustomMessage# cat Dockerfile 
+# Dockerfile based on the latest Centos 7 image - non-privileged user entry
+FROM centos:latest
+MAINTAINER tarzan@jungle.com
+
+RUN useradd -ms /bin/bash user
+
+RUN echo "EXPORT 192.168.0.0" >> /etc/exports.list
+
+USER user	
+root@ubu4:/docker/Builds/CustomMessage# 
+----------------------------------------
+good example of ENV in Dockerfile
+ENV JAVA_BIN /usr/java/jdk1.8.0/jre/bin
+------------------------------------
+CMD vs RUN
+RUN is during the build
+
+
+root@ubu4:/docker/Builds/EchoServer# docker run centos7/echo:v1
+This is a custom message for Tarzan
+root@ubu4:/docker/Builds/EchoServer# cat Dockerfile 
+# Dockerfile based on the latest Centos 7 image - non-privileged user entry
+FROM centos:latest
+MAINTAINER tarzan@jungle.com
+RUN useradd -ms /bin/bash user
+CMD "echo" "This is a custom message for Tarzan"
+USER user
+root@ubu4:/docker/Builds/EchoServer# 
+
+---
+# Dockerfile based on the latest Centos 7 image - non-privileged user entry
+FROM centos:latest
+MAINTAINER tarzan@jungle.com
+RUN useradd -ms /bin/bash user
+ENTRYPOINT echo "This is a custom message for Tarzan"
+USER user
+---------
+docker exec apacheweb1 /bin/cat /var/www/html/index.html
+
+------------------
+
+EXPOSE
+expose yokken, yani kullanilmiyorken:
+docker run -d --name apacheweb2 -P centos7/apache:v1
+docker run -d --name apacheweb3 -p 8000:80 centos7/apache:v1
+
+-
+# This image is based on CentOS 7 and will start apache in each container
+FROM centos:latest
+MAINTAINER tarzan@jungle.com
+
+RUN yum update -y
+RUN yum install -y httpd net-tools
+
+RUN echo "This is a cutome index file built during image build" > /var/www/html/index.html
+
+EXPOSE 80
+
+ENTRYPOINT apachectl "-DFOREGROUND"
+-
+
+docker run -d --name apacheweb4 -P centos/apache:v1
+------------------------------------
+Container Volume Management:
+
+run -it --name voltest1 -v /mydata centos:latest /bin/bash
+ls /var/lib/docker/volumes
+docker inspect voltest1
+
+Yada Build directory sinden direk mount edilir:
+docker run -it --name voltest2 -v /root/Builds/MyHostDir:/mydata centos:latest /bin/bah
+
+--------------------
+NETWORK
+ifconfig
+docker network ls
+docker network ls --no-trunc
+docker network inspect bridge
+docker network inspect host
+docker network inspect none
+man docker-network-create
+docker network create 
+docker network ls
+docker network create --subnet 10.1.0.0/24 --gateway 10.1.0.1 mybridge01
+docker network ls
+ifconfig
+docker network ls
+docker network rm mybridge01
+docker network ls
+docker network create --subnet 10.1.0.0/24 --gateway 10.1.0.1 mybridge01
+docker network ls
+docker network rm mybridge01
+docker network ls
+
+docker network create --subnet 10.1.0.0/16 --gateway 10.1.0.1 --ip-range=10.1.4.0/24 --driver=bridge --label=host5network bridge04
+docker network ls
+ifconfig
+docker network inspect bridge04
+docker run -it --name nettest1 --net bridge04 centos:latest /bin/bash
+yum update
+yum install net-tools
+ifconfig
+docker run -it --name nettest2 -net bridge04 -ip 10.1.4.100 centos:latest /bin/bash
+docker inspect nettest2 | grep IPAddr
+-------------------
+Inspect Container Processes
+
+docker exec  boring_torvalds /bin/ps aux | grep bash
+docker top  boring_torvalds 
+docker exec -i -t boring_torvalds /bin/bash
+
+docker ps -a -q   :  Gives container ID
+docker rm -f ID
+docker rm -f NAME
+
+/var/lib/dock/containers keep the image for containers
+rm -rf /var/lib/dock/containers/* after docker stop will remove all containers
+
+Istedigim kadar porta ayar cekebilirim:
+docker run -itd -p 8080:80 -p 8443:443 nginx:latest
+or BEST METHOD is:
+docker run -itd -P ngingx:latest
+docker run -itd --name mycontainername ubuntu:xenial /bin/bash  **NAME**
+docker rename lonely_angresi myrenamedcontainer     ** RENAME **
+-----------------------
+DOCKER EVENTS
+docker events
+docker events --since '11h'
+docker events --filter event=attach
+docker events --filter event=attach --filter event=die --filter event=stop
+------------
+Managing and Removing Base Images
+docker rmi hello-world:latest
+docker rmi -f IMAGE_ID
+
+docker commit stupefied_heisenberg centos:mine
+docker save centos:latest > centos.latest.tar
+docker save -o centos.latest.tar centos:latest
+docker save --output centos.latest.tar centos:latest
+ls -la centos.latest.tar
+tar tvf centos.latest.tar
+docker rmi centos:latest
+docker load < centos.latest.tar
+docker load --input centos.latest.tar
+gzip centos.latest.tar
+208MB -> 70MB
+docker load --input centos.latest.tar.gz
+docker images
+----------------------------
+Image History
+
+docker images
+docker history centos:mine
+docker history --no-trunc nginx
+docker history -quiet nginx
+docker history --quiet --no-trunc nginx
+docker tag IMAGE_ID mine/centos:v1.0
+docker tag mine/centos:v1.0 tcox2.mylabserver.com/centos:v1.0.1b
+---------------------------------------------------------------
+Pushing to Docke Hub
+
+hub.docker.com
+create repository and choose namespace
+
+docker login 
+user: USERNAME
+PAsword: PASSWORD
+Login Succeeded
+cd .docker
+cat config.json
+docker logout
+Remove Login credential for https://index.docker........
+
+docker tag mine/centos:v1.0 terry123456/mycentos
+docker login --username=terry123456 --email=terry@linuxacademy.com
+Password: .......
+Login Succeeded
+docker push terry123456/mycentos
+
+docker pull terry123456/mycentos   (You need to login to pull private repository)
+What is free: 1 private+unlimited public repository
+--------------------------------------------------------------------
+INTEGRATION and Use Cases
+
+docker run --name=externalweb -p 8081:80 -i -t -v /root/docker/dockerwww:/var/www/html centos6:server1 /bin/bash
+docker commit externalweb centos:finalwebv1
+docker run -d -i -t --name=devweb1 -p 8081:80 -v /root/docker/dockerwww:/var/www/html centos:finalwebv1 /bin/bash
+docker ps
+docker run -d -i -t --name=devweb2 -p 8082:80 -v /root/docker/dockerwww:/var/www/html cento
+s:finalwebv1 /bin/bash
+docker ps
+docker inspect devweb1 | grep IPAddress
+docker inspect devweb2 | grep IPAddress
+
+For Load balance on the host
+yum install nginx
+service nginx start
+http://localhost   will bring nginx site
+cd /etc/nginx
+cd sites-available
+
+vi default.conf
+upstream containerapp {
+	server 192.168.1.35:8001;
+	server 192.168.1.35:8002;
+}
+server {
+        listen *:80;
+        server_name 192.168.1.35;
+        index index.html index.htm index.php;
+        access_log /var/log/nginx/localweb.log;
+        error_log /var/log/nginx/localerror.log;
+        location / {
+                 proxy_pass http://containerapp;
+        }
+}
+
+service nginx restart
+---------------------------------------
+docker images
+ps aux | grep docker
+service docker stop
+ps aux | grep docker   make sure it is stopped
+ip link add br10 type bridge         ******ADDS a bridge  ***********
+ip addr add 10.10.100.1/24 dev br10
+ip link set br10 up
+docker -d -b br10 &
+docker images
+docker run -i -t centos:centos6 /bin/bash
+
+vi /etc/rc.local
+YOU CAN ADD THESE commands here
+or 
+/etc/network/interfaces
+auto lo
+iface lo inet loopback
+auto br10
+iface br10 inet static
+    address 10.10.100.1
+    netmask 255.255.255.0
+    bridge_ports dummy0
+    bridge_stp off
+    bridge_fd 0
+------------------------------
+Testing Version Compatibility
+
+docker images
+mkdir downlaods
+cd downloads
+cp /home/tcox/Download/apache* .
+cp /home/tcox/Downloads/jdk* .
+cp /home/tcox/Downloads/sample.war .
+docker run -i -t -name-jdk7 -v /root/docker.downloads:/root/Dwonloads centos:centos6 /bin/bash
+yum update -y
+yum install wget sudo which
+mkdir tmp
+tar zxvf ../jdk7....
+mv jdk1.7.0_71 /opt/java
+cd /opt
+ls
+ll  java
+cd java
+alternatives --install /usr/bin/java java /opt/java/bin/java 2
+alternatives --config java
+alternatives --install /usr/bin/jar jar /opt/java/bin/jar 2
+alternatives --install /usr/bin/jawa javac /opt/java/bin/javac 2
+alternatives --set jar /opt/java/bin/jar
+javac --version
+
+docker ps -a
+docker commit jdk7 centos6:java7
+
+Do the similar for java8
+
+install tomcat similar way
+
+then put the war file:
+docker -u -t --name=tomcatweb7 -v /root/docker/downloads:/root/Downloads -p 8130:8080 -e JAVA_HOME=/opt/java -e JRE_HOME=/opt/java centos6:jdk7tomcat7 /bin/bash
+java --version
+cd /root/Downloads 
+/opt/tomcat/bin/shutdown.sh
+cd sample.war /opt/tomcat/webapps
+/opt/tomcat/bin/startup.sh
+
+
+XXXXXXX
+
+
+
+
+
+
+-------------------------------
+1. Update your system as appropriate for the distribution you are using. Use the instructions in the videos OR on the Docker site to add the DOCKER repository for installing the latest copy of Docker for your distribution and version.
+
+    [user@linuxacademy:~] sudo yum update (or upgrade)
+
+    [user@linuxacademy:~] cat /etc/yum.repos.d/docker.repo
+
+    [docker-repo]
+
+    name=Docker Repo
+
+    baseurl=https://yum.dockerproject.org/repo/main/centos/$releasever/
+
+    enabled=1
+
+    gpgcheck=1
+
+     
+
+    gpgkey=https://yum.dockerproject.org/gpg
+
+     
+
+     
+
+2. Using the appropriate package management commands, install the 'docker' package. Once installed, enable the service so that it starts upon reboot. Additionally, start the 'docker' service and verify it is running.
+
+    [user@linuxacademy:~] sudo yum -y install docker-engine
+
+    (Output) Package downloads and installs here
+
+    CentOS 7.x SOLUTION
+
+    [user@linuxacademy:~] sudo systemctl enable docker
+
+    [user@linuxacademy:~] sudo systemctl start docker
+
+    [user@linuxacademy:~] ps aux | grep docker
+
+    (Output)
+
+    root      5802  0.0  0.3 346424 12936 ?        Ssl  21:02   0:00 /usr/bin/docker -d --selinux-enabled
+
+    (Output)
+
+ 
+
+3. Enable the non-root users to run 'docker' commands on the system. Create the appropriate group, add the users you want to have access to 'docker' commands, restart the 'docker' service and verify that non-root users can run basic 'docker' commands.
+
+    [user@linuxacademy:~] sudo groupadd docker
+
+    [user@linuxacademy:~] vim /etc/group
+
+    (Output)...
+
+    Find the line that looks like: docker:x:1001:
+
+    Add the 'user' user to the end of that line (after the :)
+
+    (Output)...
+
+    [user@linuxacademy:~] sudo service docker restart (OR sudo systemctl restart docker)
+
+    [user@linuxacademy:~] docker images
+
+    (Output)
+
+    REPOSITORY          TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
+
+    (Output)
+
+ 
+
+4.  Once 'docker' is installed and non-root users can run commands, use the appropriate 'docker' commands and options to download the latest available image in the public repository for Ubuntu. Once downloaded and installed, verify the image appears in the local base image list.
+
+    [user@linuxacademy:~] docker pull ubuntu:latest
+
+    (Output) NOTE: Your output may differ if image has been updated
+
+    latest: Pulling from docker.io/ubuntu
+
+    6071b4945dcf: Pull complete 
+
+    5bff21ba5409: Pull complete 
+
+    e5855facec0b: Pull complete 
+
+    8251da35e7a7: Pull complete 
+
+    Digest: sha256:1572e29178048ad9ab72e78edd4decc91a3d8a8dea0ca39817efc7cf2d86c6d7
+
+    Status: Downloaded newer image for docker.io/ubuntu:latest
+
+    (Output)...
+
+    [user@linuxacademy:~] docker images
+
+    (Output) NOTE: Again, your output may differ slightly
+
+    REPOSITORY          TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
+
+    docker.io/ubuntu    latest              8251da35e7a7        11 days ago         188.3 MB
+
+    (Output)...
+
+ 
+
+5. Start a container based upon the Ubuntu base image downloaded in Step #4. When you start the container, start it connected to the current terminal, in interactive mode, starting the bash shell for you to connect to. You may exit the container at that time.
+
+    [user@linuxacademy:~] docker run -it docker.io/ubuntu:latest /bin/bash
+
+    (Output) NOTE: Your output will differ based on the container ID assigned
+
+    root@7aaf3de3ed4f:/# exit
+
+-------------------
+
+
+    Return to Syllabus
+
+Exercise: Creating Images from Containers
+Exercise Instructions
+Solution
+Mark as Completed
+
+1. Using the CentOS  base image download, start a container based on that image. Be sure that container starts connected to the current terminal in interactive mode and runs the bash command so you are logged in to the command prompt on the container once it boots.
+
+    [user@linuxacademy:~]$ docker run -it centos:centos6 /bin/bash
+
+    (Output)
+
+    [root@b237d65fd197 /]#
+
+    (Output)
+
+     
+
+2. Once you are sitting at a command prompt on the running container, execute the update command (installing all updates for the container OS).
+
+    [root@b237d65fd197 /]# yum -y update (or yum -y upgrade)
+
+    (Output)
+
+    List of packages needing update and being applied here
+
+    (Output)
+
+ 
+
+3. Now that updates are complete, install the Apache Web Server. Once installed, make sure the web server service will start and verify that the container is listening on port 80 (install other software if needed to do so).
+
+[root@b237d65fd197 /]# yum install httpd
+
+(Output)
+
+Installed:
+  httpd.x86_64 0:2.2.15-45.el6.centos                                                                                            
+
+Dependency Installed:
+  apr.x86_64 0:1.3.9-5.el6_2                   apr-util.x86_64 0:1.3.9-3.el6_0.1    apr-util-ldap.x86_64 0:1.3.9-3.el6_0.1       
+  httpd-tools.x86_64 0:2.2.15-45.el6.centos    mailcap.noarch 0:2.1.31-2.el6        redhat-logos.noarch 0:60.0.14-12.el6.centos  
+
+Complete!
+
+(Output)
+
+[root@b237d65fd197 /]# yum install telnet
+
+(Output)
+
+Like output above, telnet is installed
+
+(Output)
+
+[root@b237d65fd197 /]# service httpd start
+
+Starting httpd: httpd: Could not reliably determine the server's fully qualified domain name, using 172.17.0.2 for ServerName
+
+                                                           [  OK  ]
+
+[root@b237d65fd197 /]# telnet localhost 80
+
+(Output)
+
+Trying 127.0.0.1...
+Connected to localhost.localdomain.
+Escape character is '^]'.
+(Output)
+
+ 
+
+4. Exit the container. Once the container is stopped, execute the appropriate command to list all stopped containers and locate the name and ID of the container you just exited. Make a note of the name and ID.
+
+    [root@b237d65fd197 /]# exit
+
+    [user@linuxacademy:~]$ docker ps -a
+
+    (Output)
+
+    CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS                   PORTS               NAMES
+    b237d65fd197        centos:6            "/bin/bash"         2 minutes ago         Exited (0) 2 minutes ago                       furious_rosalind
+
+    (Output)
+
+ 
+
+5. Using the name or ID of the container, commit the changes you made within it to a new base image called "newcentos:withapache" and verify that it shows when you list the images on your system.
+
+    [user@linuxacademy:~]$ docker commit b237d65fd197 newcentos:withapache
+
+    (Output)
+
+    18bd1fc4d60fa29ff9591f46b86ea0ad7652214d81b4e26343723e81fdbffd8a
+
+    (Output)
+
+    [user@linuxacademy:~]$ docker images
+
+    (Output)
+
+    REPOSITORY          TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
+    newcentos           withapache          18bd1fc4d60f        4 seconds ago       480.6 MB
+    centos              6                   a005304e4e74        9 weeks ago         203.1 MB
+    centos              centos6             a005304e4e74        9 weeks ago         203.1 MB
+    (Output)
+
+------------------------
+
+Exercise: Exposing Container Ports to the Host
+Exercise Instructions
+Solution
+Mark as Completed
+
+1. Create a container from the 'centos:6' base image on your system. This container does not need to be name but should be run in daemon mode, interactive and connected to the current terminal. Finally, it should start the bash shell on start up.
+
+    [user@linuxacademy ~]$ docker run -itd docker.io/centos:6 /bin/bash
+
+    99f87625ff34a5a25af8edd7e95ad9b6a4bc70db63c2ac6e0850dd4cfae58cef
+
+    [user@linuxacademy ~]$ docker ps
+
+    CONTAINER ID        IMAGE                COMMAND             CREATED             STATUS              PORTS               NAMES
+
+    99f87625ff34        docker.io/centos:6   "/bin/bash"         3 seconds ago       Up 2 seconds                            elegant_bohr        
+
+    [user@linuxacademy ~]$ docker ps
+
+    CONTAINER ID        IMAGE                COMMAND             CREATED             STATUS              PORTS               NAMES
+
+    99f87625ff34        docker.io/centos:6   "/bin/bash"         5 seconds ago       Up 5 seconds                            elegant_bohr
+
+ 
+
+2. Using the appropriate Docker inspection command, find the IP address and name for the running container. Once you have the IP, ping the IP to be sure it is running. Finally, attach to the running container so you are logged into the shell.
+
+    [user@linuxacademy ~]$ docker ps
+
+    CONTAINER ID        IMAGE                COMMAND             CREATED             STATUS              PORTS               NAMES
+
+    99f87625ff34        docker.io/centos:6   "/bin/bash"         7 minutes ago       Up 7 minutes                            elegant_bohr        
+
+    [user@linuxacademy]$ docker inspect elegant_bohr | grep IP
+
+            "GlobalIPv6Address": "",
+
+            "GlobalIPv6PrefixLen": 0,
+
+            "IPAddress": "172.17.0.2",
+
+            "IPPrefixLen": 16,
+
+            "IPv6Gateway": "",
+
+            "LinkLocalIPv6Address": "",
+
+            "LinkLocalIPv6PrefixLen": 0,
+
+            "SecondaryIPAddresses": null,
+
+            "SecondaryIPv6Addresses": null
+
+    [user@linuxacademy ~]$ ping 172.17.0.2
+
+    PING 172.17.0.2 (172.17.0.2) 56(84) bytes of data.
+
+    64 bytes from 172.17.0.2: icmp_seq=1 ttl=64 time=0.069 ms
+
+    64 bytes from 172.17.0.2: icmp_seq=2 ttl=64 time=0.096 ms
+
+    ^C
+
+    --- 172.17.0.2 ping statistics ---
+
+    2 packets transmitted, 2 received, 0% packet loss, time 999ms
+
+    rtt min/avg/max/mdev = 0.069/0.082/0.096/0.016 ms
+
+    [user@linuxacademy ~]$ docker attach elegant_bohr
+
+    [root@99f87625ff34 /]#
+
+     
+
+3. From within the container, install the Open-SSH server and make sure the service is running. From another terminal, try to log into the container over SSH by IP and note the result.
+
+    [root@99f87625ff34 /]# yum install openssh-server
+
+    ... Lots of Output Here
+
+    Installed:
+
+      openssh-server.x86_64 0:5.3p1-112.el6_7                                                                                      
+
+     
+
+    Dependency Installed:
+
+      fipscheck.x86_64 0:1.2.0-7.el6              fipscheck-lib.x86_64 0:1.2.0-7.el6       openssh.x86_64 0:5.3p1-112.el6_7      
+
+      tcp_wrappers-libs.x86_64 0:7.6-57.el6      
+
+     
+
+    Complete!
+
+    [root@99f87625ff34 /]# service sshd start
+
+    Generating SSH2 RSA host key:                              [  OK  ]
+
+    Generating SSH1 RSA host key:                              [  OK  ]
+
+    Generating SSH2 DSA host key:                              [  OK  ]
+
+    Starting sshd:
+
+    (Different Terminal)
+
+    [user@linuxacademy ~]$ ssh test@172.17.0.2
+
+    ssh: connect to host 172.17.0.2 port 22: Connection refused
+
+     
+
+4. Exit and stop the container. Remove the container from the list of previously run containers once you obtain the name from the appropriate Docker command.
+
+    [user@linuxacademy ~]$ docker ps -a
+
+    CONTAINER ID        IMAGE                COMMAND             CREATED             STATUS                         PORTS               NAMES
+
+    99f87625ff34        docker.io/centos:6   "/bin/bash"         About an hour ago   Exited (0) 4 seconds ago                           elegant_bohr        
+
+    8ef073d5c7f4        docker.io/centos:6   "/bin/bash"         About an hour ago   Exited (0) About an hour ago                       silly_poincare      
+
+    [user@linuxacademy ~]$ docker rm elegant_bohr
+
+    elegant_bohr
+
+    [user@linuxacademy ~]$ docker rm silly_poincare
+
+    silly_poincare
+
+    [user@linuxacademy ~]$ docker images
+
+    REPOSITORY          TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
+
+    docker.io/ubuntu    latest              91e54dfb1179        4 days ago          188.3 MB
+
+    docker.io/centos    6                   a005304e4e74        9 weeks ago         203.1 MB
+
+    [user@linuxacademy ~]$
+
+ 
+
+5. Create another container, name this container 'test_ssh'. When creating the container, it should be run in interactive mode and attached to the current terminal running the bash shell. Finally, expose port 22 on the container to port 8022 on the host system. Once logged in, install the Open-SSH server and make sure the service is running. Find the IP address of the container and note it.
+
+    [user@linuxacademy ~]$ docker ps
+
+    CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+
+    [user@linuxacademy ~]$ docker ps -a
+
+    CONTAINER ID        IMAGE                COMMAND             CREATED             STATUS                         PORTS               NAMES
+
+    99f87625ff34        docker.io/centos:6   "/bin/bash"         About an hour ago   Exited (0) 4 seconds ago                           elegant_bohr        
+
+    8ef073d5c7f4        docker.io/centos:6   "/bin/bash"         About an hour ago   Exited (0) About an hour ago                       silly_poincare      
+
+    [user@linuxacademy ~]$ docker rm elegant_bohr
+
+    elegant_bohr
+
+    [user@linuxacademy ~]$ docker rm silly_poincare
+
+    silly_poincare
+
+    [user@linuxacademy ~]$ docker images
+
+    REPOSITORY          TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
+
+    docker.io/ubuntu    latest              91e54dfb1179        4 days ago          188.3 MB
+
+    docker.io/centos    6                   a005304e4e74        9 weeks ago         203.1 MB
+
+    [user@linuxacademy ~]$ docker images
+
+    REPOSITORY          TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
+
+    docker.io/ubuntu    latest              91e54dfb1179        4 days ago          188.3 MB
+
+    docker.io/centos    6                   a005304e4e74        9 weeks ago         203.1 MB
+
+    [user@linuxacademy ~]$ docker run -it --name="test_ssh" -p 8022:22 docker.io/centos:6 /bin/bash
+
+    Usage of loopback devices is strongly discouraged for production use. Either use `--storage-opt dm.thinpooldev` or use `--storage-opt dm.no_warn_on_loop_devices=true` to suppress this warning.
+
+    [root@de1119934beb /]# yum install openssh-server
+
+    Loaded plugins: fastestmirror
+
+    Setting up Install Process
+
+    base                                                                                                    | 3.7 kB     00:00     
+
+    base/primary_db                                                                                         | 4.6 MB     00:07     
+
+    extras                                                                                                  | 3.4 kB     00:00     
+
+    extras/primary_db                                                                                       |  27 kB     00:00     
+
+    updates                                                                                                 | 3.4 kB     00:00     
+
+    updates/primary_db                                                                                      | 1.3 MB     00:01     
+
+    Resolving Dependencies
+
+    --> Running transaction check
+
+    ---> Package openssh-server.x86_64 0:5.3p1-112.el6_7 will be installed
+
+    --> Processing Dependency: openssh = 5.3p1-112.el6_7 for package: openssh-server-5.3p1-112.el6_7.x86_64
+
+    --> Processing Dependency: libwrap.so.0()(64bit) for package: openssh-server-5.3p1-112.el6_7.x86_64
+
+    --> Processing Dependency: libfipscheck.so.1()(64bit) for package: openssh-server-5.3p1-112.el6_7.x86_64
+
+    --> Running transaction check
+
+    ---> Package fipscheck-lib.x86_64 0:1.2.0-7.el6 will be installed
+
+    --> Processing Dependency: /usr/bin/fipscheck for package: fipscheck-lib-1.2.0-7.el6.x86_64
+
+    ---> Package openssh.x86_64 0:5.3p1-112.el6_7 will be installed
+
+    ---> Package tcp_wrappers-libs.x86_64 0:7.6-57.el6 will be installed
+
+    --> Running transaction check
+
+    ---> Package fipscheck.x86_64 0:1.2.0-7.el6 will be installed
+
+    --> Finished Dependency Resolution
+
+     
+
+    Dependencies Resolved
+
+     
+
+    ===============================================================================================================================
+
+     Package                            Arch                    Version                             Repository                Size
+
+    ===============================================================================================================================
+
+    Installing:
+
+     openssh-server                     x86_64                  5.3p1-112.el6_7                     updates                  324 k
+
+    Installing for dependencies:
+
+     fipscheck                          x86_64                  1.2.0-7.el6                         base                      14 k
+
+     fipscheck-lib                      x86_64                  1.2.0-7.el6                         base                     8.3 k
+
+     openssh                            x86_64                  5.3p1-112.el6_7                     updates                  274 k
+
+     tcp_wrappers-libs                  x86_64                  7.6-57.el6                          base                      62 k
+
+     
+
+    Transaction Summary
+
+    ===============================================================================================================================
+
+    Install       5 Package(s)
+
+     
+
+    Total download size: 682 k
+
+    Installed size: 1.6 M
+
+    Is this ok [y/N]: y
+
+    Downloading Packages:
+
+    (1/5): fipscheck-1.2.0-7.el6.x86_64.rpm                                                                 |  14 kB     00:00     
+
+    (2/5): fipscheck-lib-1.2.0-7.el6.x86_64.rpm                                                             | 8.3 kB     00:00     
+
+    (3/5): openssh-5.3p1-112.el6_7.x86_64.rpm                                                               | 274 kB     00:00     
+
+    (4/5): openssh-server-5.3p1-112.el6_7.x86_64.rpm                                                        | 324 kB     00:00     
+
+    (5/5): tcp_wrappers-libs-7.6-57.el6.x86_64.rpm                                                          |  62 kB     00:00     
+
+    -------------------------------------------------------------------------------------------------------------------------------
+
+    Total                                                                                          306 kB/s | 682 kB     00:02     
+
+    warning: rpmts_HdrFromFdno: Header V3 RSA/SHA1 Signature, key ID c105b9de: NOKEY
+
+    Retrieving key from file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
+
+    Importing GPG key 0xC105B9DE:
+
+     Userid : CentOS-6 Key (CentOS 6 Official Signing Key) <centos-6-key@centos.org>
+
+     Package: centos-release-6-6.el6.centos.12.2.x86_64 (@CentOS/$releasever)
+
+     From   : /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
+
+    Is this ok [y/N]: y
+
+    Running rpm_check_debug
+
+    Running Transaction Test
+
+    Transaction Test Succeeded
+
+    Running Transaction
+
+    Warning: RPMDB altered outside of yum.
+
+      Installing : fipscheck-1.2.0-7.el6.x86_64                                                                                1/5 
+
+      Installing : fipscheck-lib-1.2.0-7.el6.x86_64                                                                            2/5 
+
+      Installing : openssh-5.3p1-112.el6_7.x86_64                                                                              3/5 
+
+      Installing : tcp_wrappers-libs-7.6-57.el6.x86_64                                                                         4/5 
+
+      Installing : openssh-server-5.3p1-112.el6_7.x86_64                                                                       5/5 
+
+      Verifying  : tcp_wrappers-libs-7.6-57.el6.x86_64                                                                         1/5 
+
+      Verifying  : fipscheck-lib-1.2.0-7.el6.x86_64                                                                            2/5 
+
+      Verifying  : fipscheck-1.2.0-7.el6.x86_64                                                                                3/5 
+
+      Verifying  : openssh-5.3p1-112.el6_7.x86_64                                                                              4/5 
+
+      Verifying  : openssh-server-5.3p1-112.el6_7.x86_64                                                                       5/5 
+
+     
+
+    Installed:
+
+      openssh-server.x86_64 0:5.3p1-112.el6_7                                                                                      
+
+     
+
+    Dependency Installed:
+
+      fipscheck.x86_64 0:1.2.0-7.el6              fipscheck-lib.x86_64 0:1.2.0-7.el6       openssh.x86_64 0:5.3p1-112.el6_7      
+
+      tcp_wrappers-libs.x86_64 0:7.6-57.el6      
+
+     
+
+    Complete!
+
+    [root@de1119934beb /]# service sshd start
+
+    Generating SSH2 RSA host key:                              [  OK  ]
+
+    Generating SSH1 RSA host key:                              [  OK  ]
+
+    Generating SSH2 DSA host key:                              [  OK  ]
+
+    Starting sshd:                                             [  OK  ]
+
+    [root@de1119934beb /]# ifconfig
+
+    eth0      Link encap:Ethernet  HWaddr 02:42:AC:11:00:03  
+
+              inet addr:172.17.0.3  Bcast:0.0.0.0  Mask:255.255.0.0
+
+              inet6 addr: fe80::42:acff:fe11:3/64 Scope:Link
+
+              UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+
+              RX packets:3944 errors:0 dropped:0 overruns:0 frame:0
+
+              TX packets:2104 errors:0 dropped:0 overruns:0 carrier:0
+
+              collisions:0 txqueuelen:0 
+
+              RX bytes:7151212 (6.8 MiB)  TX bytes:116622 (113.8 KiB)
+
+     
+
+    lo        Link encap:Local Loopback  
+
+              inet addr:127.0.0.1  Mask:255.0.0.0
+
+              inet6 addr: ::1/128 Scope:Host
+
+              UP LOOPBACK RUNNING  MTU:65536  Metric:1
+
+              RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+
+              TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+
+              collisions:0 txqueuelen:0 
+
+              RX bytes:0 (0.0 b)  TX bytes:0 (0.0 b)
+
+    [root@de1119934beb /]#
+
+ 
+
+6. Install the 'sudo' utility. Add a user called 'test' and set a password for that user. Add the 'test' user to the 'sudoers' file. From another terminal window, attempt to log into the container via SSH on port 8022 as the 'test' user and confirm access.
+
+    [root@de1119934beb /]# yum install sudo 
+
+    Loaded plugins: fastestmirror
+
+    Setting up Install Process
+
+    Determining fastest mirrors
+
+     * base: repos.dfw.quadranet.com
+
+     * extras: centos.mirror.lstn.net
+
+     * updates: mirror.steadfast.net
+
+    Resolving Dependencies
+
+    --> Running transaction check
+
+    ---> Package sudo.x86_64 0:1.8.6p3-20.el6_7 will be installed
+
+    --> Finished Dependency Resolution
+
+     
+
+    Dependencies Resolved
+
+     
+
+    ===============================================================================================================================
+
+     Package                  Arch                       Version                                 Repository                   Size
+
+    ===============================================================================================================================
+
+    Installing:
+
+     sudo                     x86_64                     1.8.6p3-20.el6_7                        updates                     707 k
+
+     
+
+    Transaction Summary
+
+    ===============================================================================================================================
+
+    Install       1 Package(s)
+
+     
+
+    Total download size: 707 k
+
+    Installed size: 2.4 M
+
+    Is this ok [y/N]: y
+
+    Downloading Packages:
+
+    sudo-1.8.6p3-20.el6_7.x86_64.rpm                                                                        | 707 kB     00:02     
+
+    Running rpm_check_debug
+
+    Running Transaction Test
+
+    Transaction Test Succeeded
+
+    Running Transaction
+
+      Installing : sudo-1.8.6p3-20.el6_7.x86_64                                                                                1/1 
+
+      Verifying  : sudo-1.8.6p3-20.el6_7.x86_64                                                                                1/1 
+
+     
+
+    Installed:
+
+      sudo.x86_64 0:1.8.6p3-20.el6_7                                                                                               
+
+     
+
+    Complete!
+
+    [root@de1119934beb /]# adduser test
+
+    [root@de1119934beb /]# passwd test
+
+    Changing password for user test.
+
+    New password: 
+
+    BAD PASSWORD: it is based on a dictionary word
+
+    Retype new password: 
+
+    passwd: all authentication tokens updated successfully.
+
+    [root@de1119934beb /]#
+
+    (Other Terminal Window)
+
+    [user@linuxacademy ~]$ ssh test@172.17.0.3
+
+    The authenticity of host '172.17.0.3 (172.17.0.3)' can't be established.
+
+    RSA key fingerprint is e8:5e:28:d8:64:1f:81:3a:d9:4c:2c:0c:8e:a1:27:b7.
+
+    Are you sure you want to continue connecting (yes/no)? yes
+
+    Warning: Permanently added '172.17.0.3' (RSA) to the list of known hosts.
+
+    test@172.17.0.3's password: 
+
+    [test@de1119934beb ~]$ sudo visudo
+
+    (...add user here to /etc/sudoers...)
+
+----------------------------------     
+
+
+Exercise: Creating Custom Image from a Dockerfile
+Exercise Instructions
+Solution
+Mark as Completed
+
+1. Create a directory called 'custom' and change to it. In this directory, create an empty file called "Dockerfile".
+
+    [user@linuxacademy:~]$ mkdir custom
+
+    [user@linuxacademy:~]$ cd custom
+
+    [user@linuxacademy:custom/]$ touch Dockerfile
+
+ 
+
+2. Edit the "Dockerfile" created in Step #1 above. This configuration file should be written to perform the following actions:
+
+    Use the base Centos 6 Latest version image from the public repository
+    Identify you and your email address as the author and maintainer of this image
+    Update the base OS after initial import of the image
+    Install the Open-SSH Server
+    Install Apache Web Server
+    Expose ports 22 and 80 to support the services installed
+
+    [user@linuxacademy:custom/]$ vi Dockerfile
+
+    (Output) NOTE: This is one example of what this file needs to contain, yours may differ slightly
+
+     # Dockerfile that modifies centos:centos6 to update, include Apache Web
+    # Server and OpenSSH Server, exposing the appropriate ports
+    FROM centos:centos6
+    MAINTAINER User Name <username@domain.com>
+
+    # Update the server OS
+    RUN yum -y upgrade
+
+    # Install Apache Web Server
+    RUN yum -y install httpd
+
+    # Install OpenSSH-Server
+    RUN yum -y install openssh-server
+
+    # Expose the SSH and Web Ports for attachment
+    EXPOSE 22 80
+    (Output)
+
+ 
+
+3. Build the custom image from the 'Dockerfile' as created above. Name/tag this new image as "mycustomimg/withservices:v1". Once the image is built, verify the image appears in your list.
+
+    [user@linuxacademy:custom/]$ docker build -t mycustomimg/withservices:v1 .
+
+    (Output) NOTE: Yours will differ slightly, FULL output listed here for reference
+
+    Sending build context to Docker daemon 2.048 kB
+    Sending build context to Docker daemon
+    Step 0 : FROM centos:centos6
+     ---> a005304e4e74
+    Step 1 : MAINTAINER User Name <username@domain.com>
+     ---> Running in f12b9039e6dd
+     ---> 67117c947e51
+    Removing intermediate container f12b9039e6dd
+    Step 2 : RUN yum -y upgrade
+     ---> Running in 05bdb93df51d
+    Loaded plugins: fastestmirror
+    Setting up Upgrade Process
+    Resolving Dependencies
+    --> Running transaction check
+    ---> Package bash.x86_64 0:4.1.2-29.el6 will be updated
+    ---> Package bash.x86_64 0:4.1.2-33.el6 will be an update
+    ---> Package bind-libs.x86_64 32:9.8.2-0.30.rc1.el6_6.3 will be updated
+    ---> Package bind-libs.x86_64 32:9.8.2-0.37.rc1.el6_7.2 will be an update
+    ---> Package bind-utils.x86_64 32:9.8.2-0.30.rc1.el6_6.3 will be updated
+    ---> Package bind-utils.x86_64 32:9.8.2-0.37.rc1.el6_7.2 will be an update
+    ---> Package binutils.x86_64 0:2.20.51.0.2-5.42.el6 will be updated
+    ---> Package binutils.x86_64 0:2.20.51.0.2-5.43.el6 will be an update
+    ---> Package centos-release.x86_64 0:6-6.el6.centos.12.2 will be updated
+    ---> Package centos-release.x86_64 0:6-7.el6.centos.12.3 will be an update
+    ---> Package chkconfig.x86_64 0:1.3.49.3-2.el6_4.1 will be updated
+    ---> Package chkconfig.x86_64 0:1.3.49.3-5.el6 will be an update
+    ---> Package curl.x86_64 0:7.19.7-40.el6_6.4 will be updated
+    ---> Package curl.x86_64 0:7.19.7-46.el6 will be an update
+    ---> Package elfutils-libelf.x86_64 0:0.158-3.2.el6 will be updated
+    ---> Package elfutils-libelf.x86_64 0:0.161-3.el6 will be an update
+    ---> Package ethtool.x86_64 2:3.5-5.el6 will be updated
+    ---> Package ethtool.x86_64 2:3.5-6.el6 will be an update
+    ---> Package gdbm.x86_64 0:1.8.0-36.el6 will be updated
+    ---> Package gdbm.x86_64 0:1.8.0-38.el6 will be an update
+    ---> Package glibc.x86_64 0:2.12-1.149.el6_6.9 will be updated
+    ---> Package glibc.x86_64 0:2.12-1.166.el6_7.1 will be an update
+    ---> Package glibc-common.x86_64 0:2.12-1.149.el6_6.9 will be updated
+    ---> Package glibc-common.x86_64 0:2.12-1.166.el6_7.1 will be an update
+    ---> Package grep.x86_64 0:2.6.3-6.el6 will be updated
+    ---> Package grep.x86_64 0:2.20-3.el6 will be an update
+    ---> Package hwdata.noarch 0:0.233-11.1.el6 will be updated
+    ---> Package hwdata.noarch 0:0.233-14.1.el6 will be an update
+    ---> Package initscripts.x86_64 0:9.03.46-1.el6.centos.1 will be updated
+    ---> Package initscripts.x86_64 0:9.03.49-1.el6.centos will be an update
+    ---> Package iproute.x86_64 0:2.6.32-33.el6_6 will be updated
+    ---> Package iproute.x86_64 0:2.6.32-45.el6 will be an update
+    ---> Package iptables.x86_64 0:1.4.7-14.el6 will be updated
+    ---> Package iptables.x86_64 0:1.4.7-16.el6 will be an update
+    ---> Package iputils.x86_64 0:20071127-17.el6_4.2 will be updated
+    ---> Package iputils.x86_64 0:20071127-20.el6 will be an update
+    ---> Package krb5-libs.x86_64 0:1.10.3-37.el6_6 will be updated
+    ---> Package krb5-libs.x86_64 0:1.10.3-42.el6 will be an update
+    ---> Package libcom_err.x86_64 0:1.41.12-21.el6 will be updated
+    ---> Package libcom_err.x86_64 0:1.41.12-22.el6 will be an update
+    ---> Package libcurl.x86_64 0:7.19.7-40.el6_6.4 will be updated
+    ---> Package libcurl.x86_64 0:7.19.7-46.el6 will be an update
+    ---> Package libgcc.x86_64 0:4.4.7-11.el6 will be updated
+    ---> Package libgcc.x86_64 0:4.4.7-16.el6 will be an update
+    ---> Package libsemanage.x86_64 0:2.0.43-4.2.el6 will be updated
+    ---> Package libsemanage.x86_64 0:2.0.43-5.1.el6 will be an update
+    ---> Package libstdc++.x86_64 0:4.4.7-11.el6 will be updated
+    ---> Package libstdc++.x86_64 0:4.4.7-16.el6 will be an update
+    ---> Package libuser.x86_64 0:0.56.13-5.el6 will be updated
+    ---> Package libuser.x86_64 0:0.56.13-8.el6_7 will be an update
+    ---> Package libxml2.x86_64 0:2.7.6-17.el6_6.1 will be updated
+    ---> Package libxml2.x86_64 0:2.7.6-20.el6 will be an update
+    ---> Package module-init-tools.x86_64 0:3.9-24.el6 will be updated
+    ---> Package module-init-tools.x86_64 0:3.9-25.el6 will be an update
+    ---> Package ncurses.x86_64 0:5.7-3.20090208.el6 will be updated
+    ---> Package ncurses.x86_64 0:5.7-4.20090207.el6 will be an update
+    ---> Package ncurses-base.x86_64 0:5.7-3.20090208.el6 will be updated
+    ---> Package ncurses-base.x86_64 0:5.7-4.20090207.el6 will be an update
+    ---> Package ncurses-libs.x86_64 0:5.7-3.20090208.el6 will be updated
+    ---> Package ncurses-libs.x86_64 0:5.7-4.20090207.el6 will be an update
+    ---> Package nss.x86_64 0:3.18.0-5.3.el6_6 will be updated
+    ---> Package nss.x86_64 0:3.19.1-3.el6_6 will be an update
+    ---> Package nss-sysinit.x86_64 0:3.18.0-5.3.el6_6 will be updated
+    ---> Package nss-sysinit.x86_64 0:3.19.1-3.el6_6 will be an update
+    ---> Package nss-tools.x86_64 0:3.18.0-5.3.el6_6 will be updated
+    ---> Package nss-tools.x86_64 0:3.19.1-3.el6_6 will be an update
+    ---> Package nss-util.x86_64 0:3.18.0-1.el6_6 will be updated
+    ---> Package nss-util.x86_64 0:3.19.1-1.el6_6 will be an update
+    ---> Package openldap.x86_64 0:2.4.39-8.el6 will be updated
+    ---> Package openldap.x86_64 0:2.4.40-5.el6 will be an update
+    ---> Package openssl.x86_64 0:1.0.1e-30.el6.9 will be updated
+    ---> Package openssl.x86_64 0:1.0.1e-42.el6 will be an update
+    ---> Package pam.x86_64 0:1.1.1-20.el6 will be updated
+    ---> Package pam.x86_64 0:1.1.1-20.el6_7.1 will be an update
+    ---> Package pcre.x86_64 0:7.8-6.el6 will be updated
+    ---> Package pcre.x86_64 0:7.8-7.el6 will be an update
+    ---> Package pinentry.x86_64 0:0.7.6-6.el6 will be updated
+    ---> Package pinentry.x86_64 0:0.7.6-8.el6 will be an update
+    ---> Package policycoreutils.x86_64 0:2.0.83-19.47.el6_6.1 will be updated
+    ---> Package policycoreutils.x86_64 0:2.0.83-24.el6 will be an update
+    ---> Package procps.x86_64 0:3.2.8-30.el6 will be updated
+    ---> Package procps.x86_64 0:3.2.8-33.el6 will be an update
+    ---> Package python.x86_64 0:2.6.6-52.el6 will be updated
+    ---> Package python.x86_64 0:2.6.6-64.el6 will be an update
+    ---> Package python-libs.x86_64 0:2.6.6-52.el6 will be updated
+    ---> Package python-libs.x86_64 0:2.6.6-64.el6 will be an update
+    ---> Package rpm.x86_64 0:4.8.0-38.el6_6 will be updated
+    ---> Package rpm.x86_64 0:4.8.0-47.el6 will be an update
+    ---> Package rpm-libs.x86_64 0:4.8.0-38.el6_6 will be updated
+    ---> Package rpm-libs.x86_64 0:4.8.0-47.el6 will be an update
+    ---> Package rpm-python.x86_64 0:4.8.0-38.el6_6 will be updated
+    ---> Package rpm-python.x86_64 0:4.8.0-47.el6 will be an update
+    ---> Package sqlite.x86_64 0:3.6.20-1.el6 will be updated
+    ---> Package sqlite.x86_64 0:3.6.20-1.el6_7.2 will be an update
+    ---> Package sysvinit-tools.x86_64 0:2.87-5.dsf.el6 will be updated
+    ---> Package sysvinit-tools.x86_64 0:2.87-6.dsf.el6 will be an update
+    ---> Package tzdata.noarch 0:2015d-1.el6 will be updated
+    ---> Package tzdata.noarch 0:2015f-1.el6 will be an update
+    ---> Package udev.x86_64 0:147-2.57.el6 will be updated
+    ---> Package udev.x86_64 0:147-2.63.el6 will be an update
+    ---> Package vim-minimal.x86_64 2:7.2.411-1.8.el6 will be updated
+    ---> Package vim-minimal.x86_64 2:7.4.629-5.el6 will be an update
+    ---> Package yum.noarch 0:3.2.29-60.el6.centos will be updated
+    ---> Package yum.noarch 0:3.2.29-69.el6.centos will be an update
+    --> Finished Dependency Resolution
+
+    Dependencies Resolved
+
+    ================================================================================
+     Package              Arch      Version                        Repository  Size
+    ================================================================================
+    Updating:
+     bash                 x86_64    4.1.2-33.el6                   base       907 k
+     bind-libs            x86_64    32:9.8.2-0.37.rc1.el6_7.2      updates    885 k
+     bind-utils           x86_64    32:9.8.2-0.37.rc1.el6_7.2      updates    186 k
+     binutils             x86_64    2.20.51.0.2-5.43.el6           base       2.8 M
+     centos-release       x86_64    6-7.el6.centos.12.3            base        21 k
+     chkconfig            x86_64    1.3.49.3-5.el6                 base       159 k
+     curl                 x86_64    7.19.7-46.el6                  base       196 k
+     elfutils-libelf      x86_64    0.161-3.el6                    base       193 k
+     ethtool              x86_64    2:3.5-6.el6                    base       103 k
+     gdbm                 x86_64    1.8.0-38.el6                   base        29 k
+     glibc                x86_64    2.12-1.166.el6_7.1             updates    3.8 M
+     glibc-common         x86_64    2.12-1.166.el6_7.1             updates     14 M
+     grep                 x86_64    2.20-3.el6                     base       345 k
+     hwdata               noarch    0.233-14.1.el6                 base       1.3 M
+     initscripts          x86_64    9.03.49-1.el6.centos           base       945 k
+     iproute              x86_64    2.6.32-45.el6                  base       367 k
+     iptables             x86_64    1.4.7-16.el6                   base       254 k
+     iputils              x86_64    20071127-20.el6                base       120 k
+     krb5-libs            x86_64    1.10.3-42.el6                  base       768 k
+     libcom_err           x86_64    1.41.12-22.el6                 base        37 k
+     libcurl              x86_64    7.19.7-46.el6                  base       168 k
+     libgcc               x86_64    4.4.7-16.el6                   base       103 k
+     libsemanage          x86_64    2.0.43-5.1.el6                 base       104 k
+     libstdc++            x86_64    4.4.7-16.el6                   base       295 k
+     libuser              x86_64    0.56.13-8.el6_7                updates    368 k
+     libxml2              x86_64    2.7.6-20.el6                   base       801 k
+     module-init-tools    x86_64    3.9-25.el6                     base       466 k
+     ncurses              x86_64    5.7-4.20090207.el6             base       268 k
+     ncurses-base         x86_64    5.7-4.20090207.el6             base        61 k
+     ncurses-libs         x86_64    5.7-4.20090207.el6             base       245 k
+     nss                  x86_64    3.19.1-3.el6_6                 updates    856 k
+     nss-sysinit          x86_64    3.19.1-3.el6_6                 updates     46 k
+     nss-tools            x86_64    3.19.1-3.el6_6                 updates    433 k
+     nss-util             x86_64    3.19.1-1.el6_6                 updates     66 k
+     openldap             x86_64    2.4.40-5.el6                   base       283 k
+     openssl              x86_64    1.0.1e-42.el6                  base       1.5 M
+     pam                  x86_64    1.1.1-20.el6_7.1               updates    658 k
+     pcre                 x86_64    7.8-7.el6                      base       196 k
+     pinentry             x86_64    0.7.6-8.el6                    base        66 k
+     policycoreutils      x86_64    2.0.83-24.el6                  base       651 k
+     procps               x86_64    3.2.8-33.el6                   base       217 k
+     python               x86_64    2.6.6-64.el6                   base        76 k
+     python-libs          x86_64    2.6.6-64.el6                   base       5.3 M
+     rpm                  x86_64    4.8.0-47.el6                   base       904 k
+     rpm-libs             x86_64    4.8.0-47.el6                   base       316 k
+     rpm-python           x86_64    4.8.0-47.el6                   base        59 k
+     sqlite               x86_64    3.6.20-1.el6_7.2               updates    300 k
+     sysvinit-tools       x86_64    2.87-6.dsf.el6                 base        60 k
+     tzdata               noarch    2015f-1.el6                    updates    442 k
+     udev                 x86_64    147-2.63.el6                   base       355 k
+     vim-minimal          x86_64    2:7.4.629-5.el6                base       422 k
+     yum                  noarch    3.2.29-69.el6.centos           base       1.0 M
+
+    Transaction Summary
+    ================================================================================
+    Upgrade      52 Package(s)
+
+    Total download size: 44 M
+    Downloading Packages:
+    --------------------------------------------------------------------------------
+    Total                                           6.0 MB/s |  44 MB     00:07    
+    warning: rpmts_HdrFromFdno: Header V3 RSA/SHA1 Signature, key ID c105b9de: NOKEY
+    Retrieving key from file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
+    Importing GPG key 0xC105B9DE:
+     Userid : CentOS-6 Key (CentOS 6 Official Signing Key) <centos-6-key@centos.org>
+     Package: centos-release-6-6.el6.centos.12.2.x86_64 (@CentOS/$releasever)
+     From   : /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
+    Running rpm_check_debug
+    Running Transaction Test
+    Transaction Test Succeeded
+    Running Transaction
+    Warning: RPMDB altered outside of yum.
+      Updating   : libgcc-4.4.7-16.el6.x86_64                                 1/104
+      Updating   : centos-release-6-7.el6.centos.12.3.x86_64                  2/104
+      Updating   : tzdata-2015f-1.el6.noarch                                  3/104
+      Updating   : ncurses-base-5.7-4.20090207.el6.x86_64                     4/104
+      Updating   : glibc-common-2.12-1.166.el6_7.1.x86_64                     5/104
+      Updating   : glibc-2.12-1.166.el6_7.1.x86_64                            6/104
+      Updating   : ncurses-libs-5.7-4.20090207.el6.x86_64                     7/104
+      Updating   : bash-4.1.2-33.el6.x86_64                                   8/104
+      Updating   : chkconfig-1.3.49.3-5.el6.x86_64                            9/104
+      Updating   : nss-util-3.19.1-1.el6_6.x86_64                            10/104
+      Updating   : nss-3.19.1-3.el6_6.x86_64                                 11/104
+      Updating   : nss-sysinit-3.19.1-3.el6_6.x86_64                         12/104
+      Updating   : libcom_err-1.41.12-22.el6.x86_64                          13/104
+      Updating   : krb5-libs-1.10.3-42.el6.x86_64                            14/104
+      Updating   : openssl-1.0.1e-42.el6.x86_64                              15/104
+      Updating   : elfutils-libelf-0.161-3.el6.x86_64                        16/104
+      Updating   : pam-1.1.1-20.el6_7.1.x86_64                               17/104
+      Updating   : libxml2-2.7.6-20.el6.x86_64                               18/104
+      Updating   : sysvinit-tools-2.87-6.dsf.el6.x86_64                      19/104
+      Updating   : 32:bind-libs-9.8.2-0.37.rc1.el6_7.2.x86_64                20/104
+      Updating   : nss-tools-3.19.1-3.el6_6.x86_64                           21/104
+      Updating   : libcurl-7.19.7-46.el6.x86_64                              22/104
+      Updating   : rpm-libs-4.8.0-47.el6.x86_64                              23/104
+      Updating   : curl-7.19.7-46.el6.x86_64                                 24/104
+      Updating   : rpm-4.8.0-47.el6.x86_64                                   25/104
+      Updating   : openldap-2.4.40-5.el6.x86_64                              26/104
+      Updating   : binutils-2.20.51.0.2-5.43.el6.x86_64                      27/104
+      Updating   : module-init-tools-3.9-25.el6.x86_64                       28/104
+      Updating   : hwdata-0.233-14.1.el6.noarch                              29/104
+      Updating   : procps-3.2.8-33.el6.x86_64                                30/104
+      Updating   : sqlite-3.6.20-1.el6_7.2.x86_64                            31/104
+      Updating   : 2:ethtool-3.5-6.el6.x86_64                                32/104
+      Updating   : libstdc++-4.4.7-16.el6.x86_64                             33/104
+      Updating   : pcre-7.8-7.el6.x86_64                                     34/104
+      Updating   : grep-2.20-3.el6.x86_64                                    35/104
+    install-info: No such file or directory for /usr/share/info/grep.info.gz
+      Updating   : gdbm-1.8.0-38.el6.x86_64                                  36/104
+      Updating   : python-2.6.6-64.el6.x86_64                                37/104
+      Updating   : python-libs-2.6.6-64.el6.x86_64                           38/104
+      Updating   : rpm-python-4.8.0-47.el6.x86_64                            39/104
+      Updating   : libsemanage-2.0.43-5.1.el6.x86_64                         40/104
+      Updating   : policycoreutils-2.0.83-24.el6.x86_64                      41/104
+      Updating   : iptables-1.4.7-16.el6.x86_64                              42/104
+      Updating   : iproute-2.6.32-45.el6.x86_64                              43/104
+      Updating   : iputils-20071127-20.el6.x86_64                            44/104
+      Updating   : initscripts-9.03.49-1.el6.centos.x86_64                   45/104
+
+                       ... CONCATENATING OUTPUT HERE ...   
+
+    [user@linuxacademy:custom/]$ docker images
+
+    REPOSITORY                 TAG                 IMAGE ID            CREATED              SIZE
+
+    mycustomimg/withservices   v1                  1c4c9e540407        About a minute ago   322.7 MB
+
+    [user@linuxacademy:custom/]$
+------------------------------------------------
+
+Exercise: Managing Containers
+Exercise Instructions
+Solution
+Mark as Completed
+
+1. Create a container from the base image for the latest version of Ubuntu available (if you do not have an Ubuntu base image installed locally, pull the latest one down for your local repository). The container should be started in interactive mode attached to the current terminal and running the bash shell. Once running, shut the container down by exiting.
+
+    user@linuxacademy:~$ docker pull ubuntu:latest
+
+    Pulling repository ubuntu
+
+    91e54dfb1179: Download complete
+
+    d3a1f33e8a5a: Download complete
+
+    c22013c84729: Download complete
+
+    d74508fb6632: Download complete
+
+    Status: Downloaded newer image for ubuntu:latest
+
+    user@linuxacademy:~$ docker images
+
+    REPOSITORY                 TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
+
+    mycustomimg/withservices   v1                  dcfdd130c812        29 hours ago        506.9 MB
+
+    newcentos                  withapache          18bd1fc4d60f        2 days ago          480.6 MB
+
+    ubuntu                     latest              91e54dfb1179        4 days ago          188.4 MB
+
+    ubuntu                     trusty              91e54dfb1179        4 days ago          188.4 MB
+
+    ubuntu                     trusty-20150814     91e54dfb1179        4 days ago          188.4 MB
+
+    ubuntu                     14.04               91e54dfb1179        4 days ago          188.4 MB
+
+    ubuntu                     14.04.3             91e54dfb1179        4 days ago          188.4 MB
+
+    centos                     6                   a005304e4e74        9 weeks ago         203.1 MB
+
+    centos                     centos6             a005304e4e74        9 weeks ago         203.1 MB
+
+    user@linuxacademy:~$ docker run -it ubuntu:latest /bin/bash
+
+    root@a163412a382b:/# exit
+
+    exit
+
+ 
+
+2. Run the appropriate Docker command to get the name of the previously run container. Issue the appropriate command to restart the container that you obtained the name of. Do NOT create a new container, restart the one we just used.
+
+    user@linuxacademy:~$ docker ps -a
+
+    CONTAINER ID        IMAGE               COMMAND             CREATED              STATUS                          PORTS               NAMES
+
+    a163412a382b        ubuntu:14.04        "/bin/bash"         About a minute ago   Exited (0) About a minute ago                       agitated_bohr
+
+    b237d65fd197        centos:6            "/bin/bash"         2 days ago           Exited (0) 2 days ago                               furious_rosalind
+
+    user@linuxacademy:~$ docker restart agitated_bohr
+
+    agitated_bohr
+
+    user@linuxacademy:~$ docker ps
+
+    CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+
+    a163412a382b        ubuntu:14.04        "/bin/bash"         2 minutes ago       Up 16 seconds                           agitated_bohr
+
+  
+
+3. Stop the container. Remove that container from the system completely using the appropriate command.
+
+    user@linuxacademy:~$ docker stop agitated_bohr
+
+    agitated_bohr
+
+    user@linuxacademy:~$ docker ps
+
+    CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+
+    user@linuxacademy:~$ docker ps -a
+
+    CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS                     PORTS               NAMES
+
+    a163412a382b        ubuntu:14.04        "/bin/bash"         3 minutes ago       Exited (0) 5 seconds ago                       agitated_bohr
+
+    b237d65fd197        centos:6            "/bin/bash"         2 days ago          Exited (0) 2 days ago                          furious_rosalind
+
+    user@linuxacademy:~$ docker rm agitated_bohr
+
+    agitated_bohr
+
+    user@linuxacademy:~$ docker ps -a
+
+    CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS                  PORTS               NAMES
+
+    b237d65fd197        centos:6            "/bin/bash"         2 days ago          Exited (0) 2 days ago                       furious_rosalind
+
+ 
+
+4. Create (not run) a container called "my_container", create it with parameters that will allow it to run interactively and attached to the local console running the bash shell. Verify that the container is not running.
+
+    user@linuxacademy:~$ docker create -it --name="my_container" ubuntu:latest /bin/bash
+
+    a8eccaa97e322ff640bb9f7071f191dc9a514afb324af28269ffbb7ae754666f
+
+    user@linuxacademy:~$ docker ps -a
+
+    CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS                  PORTS               NAMES
+
+    a8eccaa97e32        ubuntu:14.04        "/bin/bash"         4 seconds ago                                                   my_container
+
+    b237d65fd197        centos:6            "/bin/bash"         2 days ago          Exited (0) 2 days ago                       furious_rosalind
+
+5. Start the container and again, verify the container is running. Run the appropriate command to attach your session to the running container so you are logged into the shell.
+
+    user@linuxacademy:~$ docker start my_container
+
+    my_container
+
+    user@linuxacademy:~$ docker ps
+
+    CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+
+    a8eccaa97e32        ubuntu:14.04        "/bin/bash"         30 seconds ago      Up 2 seconds                            my_container
+
+    user@linuxacademy:~$ docker attach my_container
+
+    root@a8eccaa97e32:/#
+
+    root@a8eccaa97e32:/# exit
+
+---------------------------------------
+
+
+    Return to Syllabus
+
+Exercise: Adding External Content to Containers
+Exercise Instructions
+Solution
+Mark as Completed
+
+1. Create a directory in your 'user' home directory called 'docker'. Within that directory, create another directory called 'mydata'. Within that directory, create a file called 'mydata.txt' containing any text message you want.
+
+    [user@linuxacademy ~]$ mkdir docker
+
+    [user@linuxacademy ~]$ cd docker
+
+    [user@linuxacademy ~]$ mkdir mydata
+
+    [user@linuxacademy ~]$ cd mydata
+
+    [user@linuxacademy mydata]$ ll
+
+    total 0
+
+    [user@linuxacademy mydata]$ echo "this is host data" >> mydata.txt
+
+    [user@linuxacademy mydata]$ ll
+
+    total 4
+
+    -rw-rw-r-- 1 user user 18 Aug 25 15:21 mydata.txt
+
+    [user@linuxacademy mydata]$ cd ..
+
+    [user@linuxacademy docker]$ ll
+
+    total 0
+
+    drwxrwxr-x 2 user user 23 Aug 25 15:21 mydata
+
+ 
+
+2. Create a docker container name 'local_vol' from the 'centos:6' image. The container should be created in interactive mode, attached to the current terminal and running the bash shell. Finally create the container with a volume (or directory) called 'containerdata' so that the system will automatically create the directory/mount when the container starts.
+
+    [user@linuxacademy docker]$ docker run -it --name="local_vol" -v /containerdata centos:6 /bin/bash
+
+    [root@191131068f8c /]#
+
+ 
+
+ 
+
+3. List the filesystems within the container, specifically looking for the volume/directory that was added to the container during creation.
+
+    [root@191131068f8c /]# df -h
+
+    Filesystem            Size  Used Avail Use% Mounted on
+
+    rootfs                9.8G  254M  9.0G   3% /
+
+    /dev/mapper/docker-8:2-203558447-191131068f8ceffe6fb38198a61b9806f27e4d22de3c8b0d2aec4c0c4fe7f88d
+
+                          9.8G  254M  9.0G   3% /
+
+    tmpfs                 2.0G     0  2.0G   0% /dev
+
+    shm                    64M     0   64M   0% /dev/shm
+
+    /dev/sda2              36G  4.3G   32G  12% /containerdata
+
+    tmpfs                 2.0G     0  2.0G   0% /run/secrets
+
+    /dev/sda2              36G  4.3G   32G  12% /etc/resolv.conf
+
+    /dev/sda2              36G  4.3G   32G  12% /etc/hostname
+
+    /dev/sda2              36G  4.3G   32G  12% /etc/hosts
+
+    tmpfs                 2.0G     0  2.0G   0% /proc/kcore
+
+    tmpfs                 2.0G     0  2.0G   0% /proc/timer_stats
+
+    [root@191131068f8c /]# ls -al /containerdata/
+
+    total 4
+
+    drwxr-xr-x  2 root root    6 Aug 25 20:46 .
+
+    drwxr-xr-x 23 root root 4096 Aug 25 20:46 ..
+
+     
+
+    [root@191131068f8c /]#
+
+ 
+
+4. Exit the container. This time, create another container called 'remote_vol' with the same container configuration except when creating the volume in the container, link the volume name 'mydata' to the underlying host directory structure created in Step #1.
+
+    [user@linuxacademy docker]$ docker run -it --name="remote_vol" -v /home/user/docker/mydata:/mydata centos:6 /bin/bash
+
+    [root@0476d5af242f /]#
+
+ 
+
+5. Once the container is started, list the disk mounts and verify the remote (host) volume is mounted. Change to that directory and verify that the text file created in Step #1 appears with the content created.
+
+    [root@0476d5af242f /]# df -h
+
+    Filesystem            Size  Used Avail Use% Mounted on
+
+    rootfs                9.8G  254M  9.0G   3% /
+
+    /dev/mapper/docker-8:2-203558447-0476d5af242fa74f4e0e65efd02191685570ef89995d57716a2ff09c3078d7f8
+
+                          9.8G  254M  9.0G   3% /
+
+    tmpfs                 2.0G     0  2.0G   0% /dev
+
+    shm                    64M     0   64M   0% /dev/shm
+
+    /dev/sda2              36G  4.3G   32G  12% /mydata
+
+    tmpfs                 2.0G     0  2.0G   0% /run/secrets
+
+    /dev/sda2              36G  4.3G   32G  12% /etc/resolv.conf
+
+    /dev/sda2              36G  4.3G   32G  12% /etc/hostname
+
+    /dev/sda2              36G  4.3G   32G  12% /etc/hosts
+
+    tmpfs                 2.0G     0  2.0G   0% /proc/kcore
+
+    tmpfs                 2.0G     0  2.0G   0% /proc/timer_stats
+
+    [root@0476d5af242f /]# ls -al /mydata/
+
+    total 8
+
+    drwxrwxr-x  2 1000 1000   23 Aug 25 20:21 .
+
+    drwxr-xr-x 23 root root 4096 Aug 25 20:51 ..
+
+    -rw-rw-r--  1 1000 1000   18 Aug 25 20:21 mydata.txt
+
+    [root@0476d5af242f /]# cat /mydata/mydata.txt 
+
+    this is host data
+
+    [root@0476d5af242f /]#
+
+--------------------------
+
+Exercise: Base Image Maintenance and Cleanup
+Exercise Instructions
+Solution
+Mark as Completed
+
+1. List all currently install Docker images. If you do not have at least three Docker base images at this point, please pull down other Docker images and/or follow the other exercises in this tutorial.
+
+    user@linuxacademy:~$ docker images
+
+    REPOSITORY                 TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
+
+    mycustomimg/withservices   v1                  dcfdd130c812        30 hours ago        506.9 MB
+
+    newcentos                  withapache          18bd1fc4d60f        2 days ago          480.6 MB
+
+    ubuntu                     latest              91e54dfb1179        4 days ago          188.4 MB
+
+    ubuntu                     trusty              91e54dfb1179        4 days ago          188.4 MB
+
+    ubuntu                     trusty-20150814     91e54dfb1179        4 days ago          188.4 MB
+
+    ubuntu                     14.04               91e54dfb1179        4 days ago          188.4 MB
+
+    ubuntu                     14.04.3             91e54dfb1179        4 days ago          188.4 MB
+
+    centos                     6                   a005304e4e74        9 weeks ago         203.1 MB
+
+    centos                     centos6             a005304e4e74        9 weeks ago         203.1 MB
+
+     
+
+2. Execute the command to remove a base image that you have previously created a container from and note the resulting message.
+
+    user@linuxacademy:~$ docker rmi centos:6
+
+    Error response from daemon: Conflict, cannot delete a005304e4e74 because the container bad607059560 is using it, use -f to force
+
+    FATA[0000] Error: failed to remove one or more images
+
+     
+
+3. Run the appropriate command to remove the container that Step #2 indicated is preventing the deletion of that base image.
+
+    user@linuxacademy:~$ docker ps -a
+
+    CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS                          PORTS               NAMES
+
+    bad607059560        centos:6            "/bin/bash"         2 minutes ago       Exited (0) About a minute ago                       insane_tesla
+
+    a8eccaa97e32        ubuntu:14.04        "/bin/bash"         29 minutes ago      Exited (0) 28 minutes ago                           my_container
+
+    b237d65fd197        centos:6            "/bin/bash"         2 days ago          Exited (0) 2 days ago                               furious_rosalind
+
+    user@linuxacademy:~$ docker rm insane_tesla
+
+    insane_tesla
+
+    user@linuxacademy:~$ docker ps -a
+
+    CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS                      PORTS               NAMES
+
+    a8eccaa97e32        ubuntu:14.04        "/bin/bash"         29 minutes ago      Exited (0) 28 minutes ago                       my_container
+
+    b237d65fd197        centos:6            "/bin/bash"         2 days ago          Exited (0) 2 days ago                           furious_rosalind
+
+ 
+
+4. List all previously run containers and remove all of them one at a time. Verify that the command to list stopped containers shows nothing before continuing.
+
+    user@linuxacademy:~$ docker ps -a
+
+    CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS                      PORTS               NAMES
+
+    a8eccaa97e32        ubuntu:14.04        "/bin/bash"         30 minutes ago      Exited (0) 29 minutes ago                       my_container
+
+    b237d65fd197        centos:6            "/bin/bash"         2 days ago          Exited (0) 2 days ago                           furious_rosalind
+
+    user@linuxacademy:~$ docker rm my_container && docker rm furious_rosalind
+
+    my_container
+
+    furious_rosalind
+
+    user@linuxacademy:~$ docker ps -a
+
+    CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+
+ 
+
+5. Rerun the command executed in Step #2 and then list the base images on your system.
+
+    user@linuxacademy:~$ docker images
+
+    REPOSITORY                 TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
+
+    mycustomimg/withservices   v1                  dcfdd130c812        30 hours ago        506.9 MB
+
+    newcentos                  withapache          18bd1fc4d60f        2 days ago          480.6 MB
+
+    ubuntu                     14.04               91e54dfb1179        4 days ago          188.4 MB
+
+    ubuntu                     14.04.3             91e54dfb1179        4 days ago          188.4 MB
+
+    ubuntu                     latest              91e54dfb1179        4 days ago          188.4 MB
+
+    ubuntu                     trusty              91e54dfb1179        4 days ago          188.4 MB
+
+    ubuntu                     trusty-20150814     91e54dfb1179        4 days ago          188.4 MB
+
+    centos                     6                   a005304e4e74        9 weeks ago         203.1 MB
+
+    user@linuxacademy:~$ docker rmi centos:6
+
+    Untagged: centos:6
+
+    user@linuxacademy:~$ docker images
+
+    REPOSITORY                 TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
+
+    mycustomimg/withservices   v1                  dcfdd130c812        30 hours ago        506.9 MB
+
+    newcentos                  withapache          18bd1fc4d60f        2 days ago          480.6 MB
+
+    ubuntu                     latest              91e54dfb1179        4 days ago          188.4 MB
+
+    ubuntu                     trusty              91e54dfb1179        4 days ago          188.4 MB
+
+    ubuntu                     trusty-20150814     91e54dfb1179        4 days ago          188.4 MB
+
+    ubuntu                     14.04               91e54dfb1179        4 days ago          188.4 MB
+
+    ubuntu                     14.04.3             91e54dfb1179        4 days ago          188.4 MB
+
+     
+
+----------------------------------------------
+
+Exercise: Advanced Container Creation at the Command Line
+Exercise Instructions
+Solution
+Mark as Completed
+
+1. Using the Docker base image for Ubuntu, create a container with the following characteristics:
+
+  - Interactive
+
+  - Attached to Terminal
+
+  - Using Google Public DNS
+
+  - Named 'mycontainer1'
+
+    [user@linuxacademy docker]$ docker images
+
+    REPOSITORY          TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
+
+    docker.io/ubuntu    latest              91e54dfb1179        5 days ago          188.3 MB
+
+    docker.io/centos    6                   a005304e4e74        9 weeks ago         203.1 MB
+
+    [user@linuxacademy docker]$ docker run -it --dns=8.8.8.8 --name="mycontainer1" docker.io/ubuntu:latest /bin/bash
+
+    root@6330006f7289:/# cat /etc/resolv.conf 
+
+    nameserver 8.8.8.8
+
+ 
+
+2. Exit the container from Step #1. Using the Docker base image for Ubuntu, create a container with the following characteristics:
+
+  - Interactive
+
+  - Attached to Terminal 
+
+  - Using Google Public DNS
+
+  - Using Domain Search "mydomain.local"
+
+  - Named 'mycontainer2'
+
+     [user@linuxacademy docker]$ docker run -it --dns=8.8.8.8 --dns-search="mydomain.local" --name="mycontainer2" docker.io/ubuntu:latest /bin/bash
+
+    root@2879176e6c81:/# cat /etc/resolv.conf 
+
+    nameserver 8.8.8.8
+
+    search mydomain.local
+
+ 
+
+3. Exit the container from Step #2. Using the Docker base image for Ubuntu, create a container with the following characteristics:
+
+  - Interactive
+
+  - Attached to Terminal 
+
+  - Using Google Public DNS
+
+  - Using Domain Search "mydomain.local"
+
+  - Create a mount called '/local_vol'
+
+  - Create a mount called '/remote_vol' that mounts the file system in /home/user
+
+  - Named 'mycontainer3'
+
+    [user@linuxacademy docker]$ docker run -it --dns=8.8.8.8 --dns-search="mydomain.local" --name="mycontainer3" -v /local_vol -v /home/tcox:/remote_vol docker.io/ubuntu:latest /bin/bash
+
+    root@c5e3e6599556:/# df -h
+
+    Filesystem                                                                                         Size  Used Avail Use% Mounted on
+
+    /dev/mapper/docker-8:2-203558447-c5e3e65995567b3249f537843d4ff39644925c9265bbd48cd623b6e3564eef52  9.8G  245M  9.0G   3% /
+
+    tmpfs                                                                                              2.0G     0  2.0G   0% /dev
+
+    shm                                                                                                 64M     0   64M   0% /dev/shm
+
+    /dev/sda2                                                                                           36G  4.3G   32G  12% /local_vol
+
+    tmpfs                                                                                              2.0G     0  2.0G   0% /run/secrets
+
+    tmpfs                                                                                              2.0G     0  2.0G   0% /proc/kcore
+
+    tmpfs                                                                                              2.0G     0  2.0G   0% /proc/timer_stats
+
+    root@c5e3e6599556:/# cat /etc/resolv.conf 
+
+    nameserver 8.8.8.8
+
+    search mydomain.local
+
+    root@c5e3e6599556:/# cd /local_vol/
+
+    root@c5e3e6599556:/local_vol# cd /remote_vol/
+
+    root@c5e3e6599556:/remote_vol# 
+
+ 
+
+4. Exit the container from Step #3. List all the containers. List all characteristics inspected from 'mycontainer2' and then remove and verify removal of all containers.
+
+    [user@linuxacademy docker]$ docker ps -a
+
+    CONTAINER ID        IMAGE                     COMMAND             CREATED             STATUS                     PORTS               NAMES
+
+    c5e3e6599556        docker.io/ubuntu:latest   "/bin/bash"         2 minutes ago       Exited (0) 3 seconds ago                       mycontainer3        
+
+    2879176e6c81        docker.io/ubuntu:latest   "/bin/bash"         4 minutes ago       Exited (0) 3 minutes ago                       mycontainer2        
+
+    6330006f7289        docker.io/ubuntu:latest   "/bin/bash"         7 minutes ago       Exited (0) 5 minutes ago                       mycontainer1        
+
+    [user@linuxacademy docker]$ docker inspect mycontainer1
+
+    (NOTE: SOMETHING SIMILAR FOR EACH CONTAINER - RUN THE ABOVE COMMAND FOR EACH NAME)
+
+    [
+
+    {
+
+        "Id": "6330006f72899510254d23f845c4507d604773d2fcf2bffb77f44da1330208c1",
+
+        "Created": "2015-08-25T21:05:43.135824241Z",
+
+        "Path": "/bin/bash",
+
+        "Args": [],
+
+        "State": {
+
+            "Running": false,
+
+            "Paused": false,
+
+            "Restarting": false,
+
+            "OOMKilled": false,
+
+            "Dead": false,
+
+            "Pid": 0,
+
+            "ExitCode": 0,
+
+            "Error": "",
+
+            "StartedAt": "2015-08-25T21:05:44.409339189Z",
+
+            "FinishedAt": "2015-08-25T21:07:32.103884307Z"
+
+        },
+
+        "Image": "91e54dfb11794fad694460162bf0cb0a4fa710cfa3f60979c177d920813e267c",
+
+        "NetworkSettings": {
+
+            "Bridge": "",
+
+            "EndpointID": "",
+
+            "Gateway": "",
+
+            "GlobalIPv6Address": "",
+
+            "GlobalIPv6PrefixLen": 0,
+
+            "HairpinMode": false,
+
+            "IPAddress": "",
+
+            "IPPrefixLen": 0,
+
+            "IPv6Gateway": "",
+
+            "LinkLocalIPv6Address": "",
+
+            "LinkLocalIPv6PrefixLen": 0,
+
+            "MacAddress": "",
+
+            "NetworkID": "",
+
+            "PortMapping": null,
+
+            "Ports": null,
+
+            "SandboxKey": "",
+
+            "SecondaryIPAddresses": null,
+
+            "SecondaryIPv6Addresses": null
+
+        },
+
+        "ResolvConfPath": "/var/lib/docker/containers/6330006f72899510254d23f845c4507d604773d2fcf2bffb77f44da1330208c1/resolv.conf",
+
+        "HostnamePath": "/var/lib/docker/containers/6330006f72899510254d23f845c4507d604773d2fcf2bffb77f44da1330208c1/hostname",
+
+        "HostsPath": "/var/lib/docker/containers/6330006f72899510254d23f845c4507d604773d2fcf2bffb77f44da1330208c1/hosts",
+
+        "LogPath": "/var/lib/docker/containers/6330006f72899510254d23f845c4507d604773d2fcf2bffb77f44da1330208c1/6330006f72899510254d23f845c4507d604773d2fcf2bffb77f44da1330208c1-json.log",
+
+        "Name": "/mycontainer1",
+
+        "RestartCount": 0,
+
+        "Driver": "devicemapper",
+
+        "ExecDriver": "native-0.2",
+
+        "MountLabel": "",
+
+        "ProcessLabel": "",
+
+        "Volumes": {},
+
+        "VolumesRW": {},
+
+        "AppArmorProfile": "",
+
+        "ExecIDs": null,
+
+        "HostConfig": {
+
+            "Binds": null,
+
+            "ContainerIDFile": "",
+
+            "LxcConf": [],
+
+            "Memory": 0,
+
+            "MemorySwap": 0,
+
+            "CpuShares": 0,
+
+            "CpuPeriod": 0,
+
+            "CpusetCpus": "",
+
+            "CpusetMems": "",
+
+            "CpuQuota": 0,
+
+            "BlkioWeight": 0,
+
+            "OomKillDisable": false,
+
+            "Privileged": false,
+
+            "PortBindings": {},
+
+            "Links": null,
+
+            "PublishAllPorts": false,
+
+            "Dns": [
+
+                "8.8.8.8"
+
+            ],
+
+            "DnsSearch": null,
+
+            "ExtraHosts": null,
+
+            "VolumesFrom": null,
+
+            "Devices": [],
+
+            "NetworkMode": "bridge",
+
+            "IpcMode": "",
+
+            "PidMode": "",
+
+            "UTSMode": "",
+
+            "CapAdd": null,
+
+            "CapDrop": null,
+
+            "RestartPolicy": {
+
+                "Name": "no",
+
+                "MaximumRetryCount": 0
+
+            },
+
+            "SecurityOpt": null,
+
+            "ReadonlyRootfs": false,
+
+            "Ulimits": null,
+
+            "LogConfig": {
+
+                "Type": "json-file",
+
+                "Config": {}
+
+            },
+
+            "CgroupParent": ""
+
+        },
+
+        "Config": {
+
+            "Hostname": "6330006f7289",
+
+            "Domainname": "",
+
+            "User": "",
+
+            "AttachStdin": true,
+
+            "AttachStdout": true,
+
+            "AttachStderr": true,
+
+            "PortSpecs": null,
+
+            "ExposedPorts": null,
+
+            "Tty": true,
+
+            "OpenStdin": true,
+
+            "StdinOnce": true,
+
+            "Env": null,
+
+            "Cmd": [
+
+                "/bin/bash"
+
+            ],
+
+            "Image": "docker.io/ubuntu:latest",
+
+            "Volumes": null,
+
+            "VolumeDriver": "",
+
+            "WorkingDir": "",
+
+            "Entrypoint": null,
+
+            "NetworkDisabled": false,
+
+            "MacAddress": "",
+
+            "OnBuild": null,
+
+            "Labels": {},
+
+            "Init": ""
+
+        }
+
+    }
+
+    ]
+
+    [user@linuxacademy docker]$ docker rm `docker ps -a -q`
+
+    [user@linuxacademy docker]$ docker ps -a
+
+    CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+-----------------------------------------------------------------------
+
+Exercise: Create a Dockerized Basic Web Server
+Exercise Instructions
+Solution
+Mark as Completed
+
+1. List the base images on the system. Choose a base image for Ubuntu and create a container from that image. This container should be named "basic_web" and should be interactive, attached to the current console and run the bash prompt.
+
+    user@linuxacademy:~$ docker images
+
+    REPOSITORY                 TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
+
+    mycustomimg/withservices   v1                  dcfdd130c812        31 hours ago        506.9 MB
+
+    newcentos                  withapache          18bd1fc4d60f        2 days ago          480.6 MB
+
+    ubuntu                     trusty-20150814     91e54dfb1179        4 days ago          188.4 MB
+
+    ubuntu                     14.04               91e54dfb1179        4 days ago          188.4 MB
+
+    ubuntu                     14.04.3             91e54dfb1179        4 days ago          188.4 MB
+
+    ubuntu                     latest              91e54dfb1179        4 days ago          188.4 MB
+
+    ubuntu                     trusty              91e54dfb1179        4 days ago          188.4 MB
+
+    user@linuxacademy:~$ docker run -it --name="basic_web" ubuntu:latest /bin/bash
+
+    root@528b8c33ab7a:/#
+
+ 
+
+2. Once you are logged into the container at the prompt, install all updates. After updates are installed, install the Apache Web Server and verify that it is listening on Port 80.
+
+    root@528b8c33ab7a:/# apt-get update && apt-get upgrade && apt-get install apache2
+
+    (OUTPUT) NOTE: sample of the end of the output
+
+    ...
+
+    3Enabling module setenvif.
+
+    Enabling module filter.
+
+    Enabling module deflate.
+
+    Enabling module status.
+
+    Enabling conf charset.
+
+    Enabling conf localized-error-pages.
+
+    Enabling conf other-vhosts-access-log.
+
+    Enabling conf security.
+
+    Enabling conf serve-cgi-bin.
+
+    Enabling site 000-default.
+
+    invoke-rc.d: policy-rc.d denied execution of start.
+
+    Setting up ssl-cert (1.0.33) ...
+
+    Processing triggers for libc-bin (2.19-0ubuntu6.6) ...
+
+    Processing triggers for sgml-base (1.26+nmu4ubuntu1) ...
+
+    Processing triggers for ureadahead (0.100.0-16) ...
+
+    root@528b8c33ab7a:/#
+
+    root@528b8c33ab7a:/# apt-get install telnet
+
+    Reading package lists... Done
+
+    Building dependency tree
+
+    Reading state information... Done
+
+    The following NEW packages will be installed:
+
+      telnet
+
+    0 upgraded, 1 newly installed, 0 to remove and 0 not upgraded.
+
+    Need to get 67.1 kB of archives.
+
+    After this operation, 167 kB of additional disk space will be used.
+
+    Get:1 http://archive.ubuntu.com/ubuntu/ trusty/main telnet amd64 0.17-36build2 [67.1 kB]
+
+    Fetched 67.1 kB in 0s (89.7 kB/s)
+
+    Selecting previously unselected package telnet.
+
+    (Reading database ... 12458 files and directories currently installed.)
+
+    Preparing to unpack .../telnet_0.17-36build2_amd64.deb ...
+
+    Unpacking telnet (0.17-36build2) ...
+
+    Setting up telnet (0.17-36build2) ...
+
+    update-alternatives: using /usr/bin/telnet.netkit to provide /usr/bin/telnet (telnet) in auto mode
+
+    root@528b8c33ab7a:/# telnet localhost 80
+
+    Trying ::1...
+
+    Trying 127.0.0.1...
+
+    telnet: Unable to connect to remote host: Connection refused
+
+    root@528b8c33ab7a:/# service apache2 start
+
+     * Starting web server apache2                                                                                        AH00558: apache2: Could not reliably determine the server's fully qualified domain name, using 172.17.0.13. Set the 'ServerName' directive globally to suppress this message
+
+     *
+
+    root@528b8c33ab7a:/# telnet localhost 80
+
+    Trying ::1...
+
+    Connected to localhost.
+
+    Escape character is '^]'.
+
+    helo
+
+     
+
+     
+
+    501 Not Implemented
+
+    Not Implemented
+
+    helo to /index.html not supported.
+
+     
+    Apache/2.4.7 (Ubuntu) Server at 172.17.0.13 Port 80
+
+    Connection closed by foreign host.
+
+    root@528b8c33ab7a:/#
+
+     
+
+ 3. Using the root account profile file in the root home directory, add the command to start the web server whenever a bash session is started. 
+
+    root@528b8c33ab7a:~# vi .bashrc
+
+    NOTE: Add the line "service apache2 start" to the /root/.bashrc file at the very END
+
+ 
+
+4. Stop the container. Once stopped, commit the container as a base image called "ubuntu:baseweb".
+
+    root@528b8c33ab7a:~# exit
+
+    tcox@ubuntuvideo:~$ docker commit basic_web ubuntu:baseweb
+
+    e9c87aeba30b82e66edb7143b89c10b801b866002f0659d0fd78ba5b48a82e8e
+
+    tcox@ubuntuvideo:~$ docker images
+
+    REPOSITORY                 TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
+
+    ubuntu                     baseweb             e9c87aeba30b        3 seconds ago       224.2 MB
+
+    mycustomimg/withservices   v1                  dcfdd130c812        31 hours ago        506.9 MB
+
+    newcentos                  withapache          18bd1fc4d60f        2 days ago          480.6 MB
+
+    ubuntu                     trusty              91e54dfb1179        4 days ago          188.4 MB
+
+    ubuntu                     trusty-20150814     91e54dfb1179        4 days ago          188.4 MB
+
+    ubuntu                     14.04               91e54dfb1179        4 days ago          188.4 MB
+
+    ubuntu                     14.04.3             91e54dfb1179        4 days ago          188.4 MB
+
+    ubuntu                     latest              91e54dfb1179        4 days ago          188.4 MB
+
+ 
+
+5. Create a container based on the new "ubuntu:baseweb" image called "test_container". It should run interactively, attached to the console and starting a bash prompt. Once logged into the container, verify that the Apache service is running and port 80 is listening. Exit the container.
+
+    user@linuxacademy:~$ docker run -it --name="test_container" ubuntu:baseweb /bin/bash
+
+     * Starting web server apache2                                                                                        AH00558: apache2: Could not reliably determine the server's fully qualified domain name, using 172.17.0.14. Set the 'ServerName' directive globally to suppress this message
+
+     *
+
+    root@b830f2ecb2ca:/# telnet localhost 80
+
+    Trying ::1...
+
+    Connected to localhost.
+
+    Escape character is '^]'.
+
+    helo
+
+     
+
+     
+
+    501 Not Implemented
+
+     
+    Not Implemented
+
+    helo to /index.html not supported.
+
+     
+    Apache/2.4.7 (Ubuntu) Server at 172.17.0.14 Port 80
+
+     
+
+    Connection closed by foreign host.
+
+    root@b830f2ecb2ca:/# exit
+
+----------
+
+
