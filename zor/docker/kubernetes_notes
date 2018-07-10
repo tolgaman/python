@@ -1,4 +1,41 @@
+Raw Kubernetes Install:
 
+swapoff -a & uncomment the line for swap on /etc/fstab
+setenforce 0
+yum install -y kubelet kubeadm kubectl
+systemctl enable kubelet
+systemctl start kubelet
+kubeadm init --pod-network-cidr=10.224.0.0/16
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+kuberctl get nodes
+
+
+
+In this hands-on lesson, we'll go through everything you need to install Kubernetes on a bare CentOS system.
+
+Here are the commands I copy/pasted in during the video:
+
+cat <<EOF > /etc/yum.repos.d/kubernetes.repo
+[kubernetes]
+name=Kubernetes
+baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+enabled=1
+gpgcheck=1
+repo_gpgcheck=1
+gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+EOF
+
+cat <<EOF >  /etc/sysctl.d/k8s.conf
+net.bridge.bridge-nf-call-ip6tables = 1
+net.bridge.bridge-nf-call-iptables = 1
+EOF
+
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/v0.9.1/Documentation/kube-flannel.yml
+
+XXXXXXX
+------------------------
 Exercise: Deploying Your Cluster
 Exercise Instructions
 Solution
@@ -65,3 +102,114 @@ kubtctl get nodes
 
 ----------------------
 
+
+Exercise: Run a Job
+Exercise Instructions
+Solution
+Mark as Completed
+
+1. The full command is kubectl describe job pi
+
+2. The previous command will give you the name of the pod associated with the job, which you will need to pass into the kubectl logs command.
+
+For example: (the precise code will vary)
+
+ 
+
+$ kubectl describe job pi
+Name:           pi
+Namespace:      default
+Selector:       controller-uid=7ffe0296-f7ad-11e7-8717-0abccbe536d6
+Labels:         controller-uid=7ffe0296-f7ad-11e7-8717-0abccbe536d6
+                job-name=pi
+Annotations:    
+Parallelism:    1
+Completions:    1
+Start Time:     Fri, 13 Apr 2018 15:30:20 +0000
+Pods Statuses:  0 Running / 1 Succeeded / 0 Failed
+Pod Template:
+  Labels:  controller-uid=7ffe0296-f7ad-11e7-8717-0abccbe536d6
+           job-name=pi
+  Containers:
+   pi:
+    Image:  perl
+    Port:   
+    Command:
+      perl
+      -Mbignum=bpi
+      -wle
+      print bpi(2000)
+    Environment:  
+    Mounts:       
+  Volumes:        
+Events:
+  Type    Reason            Age   From            Message
+  ----    ------            ----  ----            -------
+  Normal  SuccessfulCreate  4m    job-controller  Created pod: pi-fmctx
+
+$ kubectl logs pi-fmctx
+
+3. The yaml could vary in a couple of ways, but here is an example solution:
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: busybox
+spec:
+  template:
+    spec:
+      containers:
+      - name: busybox
+        image: busybox
+        command: ["sleep", "10"]
+      restartPolicy: Never
+  backoffLimit: 4
+
+---------------------------------
+
+Exercise: Deploy a Pod
+Exercise Instructions
+Solution
+Mark as Completed
+
+1. This pod will cause the alpine linux container to sleep for 3600 seconds (1 hour) and then exit. Kubernetes will then restart the pod.
+
+2. If the yaml is named alpine.yaml then the command is kubectl create -f alpine.yaml
+
+3. There are a few ways to accomplish this.
+
+    Use the file method: kubectl delete -f alpine.yaml
+    Use the object method: kubectl delete pod alpine or kubectl delete pod/alpine
+
+4. There are many possibilities, but here is yaml that satisfies the exercise:
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-pod
+spec:
+  containers:
+  -  name: nginx
+      image: nginx
+  restartPolicy: Always
+
+5. Depending on the file name, the command might be: kubectl create -f nginx-pod.yaml
+-----------------------------
+
+
+Exercise: Explore the Sandbox
+Exercise Instructions
+Solution
+Mark as Completed
+
+1. The command kubectl get nodes will give the current status of all nodes.
+
+2. You can get this information in a variety of ways:
+
+    kubectl describe node node-name
+    kubectl get pods --all-namespaces -o wide will list all pods and which nodes they are currently running on.
+
+3. kubectl describe node node-2-name will list DiskPressure and MemoryPressure statuses so you can see how it is doing.
+
+4. kubectl get pods -n kube-system will provide the desired results.
+----------------------------------------------------------------------

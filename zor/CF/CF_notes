@@ -1,0 +1,287 @@
+
+Exercise: Working With JSON
+Exercise Instructions
+Solution
+Mark as Completed
+
+CloudFormation templates can be written in either a JSON or YAML format and used to build CloudFormation Stacks. In this exercise we will cover some basic JSON examples defining resources and creating a well-formed CloudFormation template. Although CloudFormation Designer is a very effective way to create templates using drag and drop functionality, it is essential to understand the syntax of templates in JSON, YAML or both. You have the option of choosing JSON or YAML, but when working in a team environment you may not have that option and it is good to understand the syntax and structure of both.
+
+ 
+Key elements of JSON templates
+
+ 
+
+Name/Value pairs in JSON are separated by ‘:’. You will see name/value pairs throughout your JSON templates. 
+
+The name component is a string and will be enclosed in double quotes.
+
+The value can be a number, string, boolean, object, or an array.
+
+ 
+
+{ } enclose objects
+
+ 
+
+[ ] enclose arrays
+
+ 
+
+Examples:
+
+ 
+
+    { “name” : “value”} 
+
+    { “name” : [“value”, “anothervalue”]}     ←-- an array of strings
+
+ 
+
+Log in to the AWS Console using your personal AWS account.
+
+ 
+
+In this exercise, you will create two CloudFormation templates for S3. The first template will be to create a very basic S3 bucket using JSON for your template.
+
+ 
+
+    Save the template as a .txt file.
+    Go into CloudFormation and select ‘Create Stack’.
+    Name the stack and accept the rest of the defaults.
+    Click ‘create’.
+
+ 
+
+The progress of your stack creation will be displayed. When stack creation is complete, go to S3 and verify that your bucket has been created.
+
+ 
+
+For the second template, you will create a public S3 bucket configured for website access with a deletion policy of retain.
+
+    Save the template as a .txt file.
+    Go into CloudFormation and select ‘Create Stack’.
+    Name the stack and accept the rest of the defaults.
+    Click ‘create’.
+
+The progress of your stack creation will be displayed. When stack creation is complete, go to S3 and verify that your bucket has been created.
+
+ 
+
+PLEASE REMEMBER TO DELETE RESOURCES NOT IN USE AFTER THE EXERCISE!!!
+
+
+
+
+Exercise: Working With JSON
+Exercise Instructions
+Solution
+Mark as Completed
+
+To create a basic S3 bucket, use the following JSON code:
+
+ 
+
+    Save the following JSON code to a .txt file.
+
+     
+
+{  
+
+   "Resources":{  
+
+      "your-bucket-name":{  
+
+         "Type":"AWS::S3::Bucket"
+
+      }
+
+   }
+
+}
+
+    Upload the file to CloudFormation using ‘Create Stack’:
+    Name the stack and accept the rest of the defaults.
+    Click ‘create’.
+
+Please note that bucket names are global and must be unique.
+
+
+
+To create a public S3 bucket configured for website access with a deletion policy of retain, complete the following:
+
+ 
+
+ 
+
+    Save the following JSON code to a .txt file.
+
+     
+
+    {  
+
+       "Resources":{  
+
+          "your-bucket-name":{  
+
+             "Type":"AWS::S3::Bucket",
+
+             "Properties":{  
+
+                "AccessControl":"PublicRead",
+
+                "WebsiteConfiguration":{  
+
+                   "IndexDocument":"index.html",
+
+                   "ErrorDocument":"error.html"
+
+                }
+
+             },
+
+             "DeletionPolicy":"Retain"
+
+          }
+
+       },
+
+       "Outputs":{  
+
+          "WebsiteURL":{  
+
+             "Value":{  
+
+                "Fn::GetAtt":[  
+
+                   "your-bucket-name",
+
+                   "WebsiteURL"
+
+                ]
+
+             },
+
+             "Description":"URL for website hosted on S3"
+
+          },
+
+          "S3BucketSecureURL":{  
+
+             "Value":{  
+
+                "Fn::Join":[  
+
+                   "",
+
+                   [  
+
+                      "https://",
+
+                      {  
+
+                         "Fn::GetAtt":[  
+
+                            "your-bucket-name",
+
+                            "DomainName"
+
+                         ]
+
+                      }
+
+                   ]
+
+                ]
+
+             },
+
+             "Description":"Name of S3 bucket to hold website content"
+
+          }
+
+       }
+
+    } 
+
+ 
+
+    Upload the file to CloudFormation using ‘Create Stack’:
+    Name the stack and accept the rest of the defaults.
+    Click ‘create’.
+
+-----------------------------------------------
+
+
+    Return to Syllabus
+
+Exercise: Working With YAML
+Exercise Instructions
+Solution
+Mark as Completed
+
+CloudFormation templates can be written in either a JSON or YAML format and used to build CloudFormation Stacks. In this exercise, we will cover some basic YAML examples defining resources and creating a well-formed CloudFormation template. Although CloudFormation Designer is a very effective way to create templates using drag and drop functionality, it is essential to understand the syntax of templates in JSON, YAML, or both. You have the option of choosing JSON or YAML, but when working in a team environment you may not have that option and it is good to understand the syntax and structure of both.
+
+ 
+The Challenge Exercise
+
+ 
+
+Log in to the AWS Console using your personal AWS account.
+
+ 
+
+In this exercise, you will create two CloudFormation templates for S3. The first template will be to create a very basic S3 bucket using YAML for your template. The output produced by the template will be the S3 Bucket name. You will save the template as a .txt file, then go into CloudFormation and select ‘Create Stack’. After naming the stack, you can accept the rest of the defaults and finally click ‘create’. The progress of your stack creation will be displayed. When stack creation is complete, go to S3 and verify that your bucket has been created.
+
+ 
+
+ 
+
+For the second template, you will create a public S3 bucket configured for website access with a deletion policy of retain. You will save the template as a .txt file, then go into CloudFormation and select ‘Create Stack’. After naming the stack, you can accept the rest of the defaults and finally click ‘create’. The progress of your stack creation will be displayed. When stack creation is complete, go to S3 and verify that your bucket has been created.
+
+ 
+
+Try to create the buckets before looking at the solutions. But you can also download the solution templates and create the S3 Buckets. 
+
+PLEASE REMEMBER TO DELETE RESOURCES NOT IN USE AFTER THE EXERCISE!!!
+
+
+
+Exercise: Working With YAML
+Exercise Instructions
+Solution
+Mark as Completed
+
+To create a basic S3 bucket that outputs the name of the bucket:
+
+       1. Go to the downloads tab for the course and download 'Exercise Working with YAML Template 1'.
+
+       2. Go into CloudFormation and select 'Create Stack'.
+
+       3. Choose 'Upload a template to S3' and upload the template you just downloaded. 
+
+       4. Click 'Next', Click 'Next' on the Options page, then click 'Create'.
+
+       5. When Stack Status progresses to 'CREATE_COMPLETE' click the outputs tab to see the S3 Bucket name.
+
+ 
+
+NOTE: Bucket names are global and must be unique.
+
+ 
+
+To create a public S3 bucket configured for website access with a deletion policy of retaining, complete the following:
+
+        1. Go to the downloads tab for the course and download 'Exercise Working with YAML Template 2'.
+
+        2. Go into CloudFormation and select 'Create Stack'.
+
+        3. Choose 'Upload a template to S3' and upload the template you just downloaded.
+
+        4. Click 'Next', Click 'Next' on the Options page, then click 'Create'.
+
+        5. When Stack Status progresses to 'CREATE_COMPLETE' click the outputs tab to see the S3 Bucket name. 
+
+
+
+
+
