@@ -1,0 +1,79 @@
+#!/usr/bin/python3
+import csv
+csvfile = open('/home/albatros/camp.csv')
+csvdata = csv.reader(csvfile)
+csvlist = list(csvdata)
+csvlist.pop(0)
+csvlist=csvlist[::-1]
+P=[]
+V=[]
+O=[]
+H=[]
+L=[]
+N=[]
+direction=[]
+dircount=[]
+for i in csvlist:
+  P.append(float(i[1].replace('$','')))
+print(f"Average Price: { round((sum(P) / len(P)),2) } ")
+
+for i in csvlist:
+  V.append(float(i[2].replace('$','')))
+print(f"Average Volume: { round(sum(V) / len(V),2) } ")
+
+for i in csvlist:
+  O.append(float(i[3].replace('$','')))
+print(f"Average Open: { round(sum(O) / len(O),2) } ")
+
+
+for i in csvlist:
+  H.append(float(i[4].replace('$','')))
+print(f"Average High: { round(sum(H) / len(H),2) } ")
+
+
+for i in csvlist:
+  L.append(float(i[5].replace('$','')))
+print(f"Average Low: { round(sum(L) / len(L),2) } ")
+
+
+for i in range(0, len(P)):
+  if i == 0:
+    direction.append(0) 
+  elif P[i] > P[i-1]:
+    direction.append(1)
+  elif P[i] == P[i-1]:
+    direction.append(0)
+  else:
+    direction.append(-1)
+
+  if direction[i] == 0:
+    dircount.append(0)
+  elif (direction[i-1] == 1 and direction[i] == 1):
+    dircount.append(dircount[i-1]+1)
+  elif (direction[i-1] == -1 and direction[i] == -1):
+    dircount.append(dircount[i-1]-1)
+  else:
+    dircount.append(0)
+      
+  N.append([P[i],direction[i],dircount[i]])  
+
+print(N)
+
+
+myfile = open('/home/albatros/cikti.csv', 'w')
+with myfile:
+  writer = csv.writer(myfile)
+  writer.writerows(N)
+
+
+###for j in range(0, len(P)):
+###  print(P[j])
+  
+#for ro in csvlist:
+#  print(ro[0], '|', ro[1])
+#
+#print(csvlist[0:2])
+#for ro in csvlist:
+#  print(ro)
+#print(len(csvlist))
+
