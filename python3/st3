@@ -1,0 +1,8 @@
+#!/usr/bin/python3
+
+stocks = ['a','b','c','d']
+
+for i in stocks:
+  print(i)
+  d=f'{i}yaaaa'
+  print(d) 
