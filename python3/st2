@@ -1,0 +1,25 @@
+#!/usr/bin/python3
+import urllib.request, urllib.error, urllib.parse
+url = 'http://www.sozcu.com.tr'
+
+response = urllib.request.urlopen(url)
+webContent = response.read()
+
+print(webContent[0::])
+
+
+#import csv
+#csvfile = open('/home/albatros/camp.csv')
+#csvdata = csv.reader(csvfile)
+#csvlist = list(csvdata)
+#url = 'https://static.googleusercontent.com/media/www.google.com/en//googleblogs/pdfs/google_predicting_the_present.pdf'
+#url = 'https://www.nasdaq.com/api/v1/historical/CAMP/stocks/2009-12-15/2019-12-15'
+url = 'https://www.nasdaq.com/api/v1/historical/CAMP/stocks/2016-12-15/2029-12-15'
+ 
+# downloading with urllib
+ 
+# import the urllib package
+import urllib.request
+ 
+# Copy a network object to a local file
+urllib.request.urlretrieve(url, "tutorial.pdf")
