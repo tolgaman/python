@@ -3,7 +3,8 @@ import csv
 import urllib.request
 
 
-stocks=['fit','camp','work','uber','okta','lyft','tgt','cost','irbt','chtr','nflx','txn','nvda','f','amd','ba','avav','amba','nete','riot','intc','ingn','ibm','aapl','siri','amzn','goog','mwa','gm','watt','cohr','a','amat','mu','tsla']
+stocks=['fit','camp','work','uber','okta','lyft','tgt','cost','irbt','chtr','nflx','txn','nvda','f','amd','ba','avav','amba','nete','intc','ingn','ibm','aapl','siri','amzn','goog','mwa','gm','watt','cohr','a','amat','mu','tsla']
+#stocks=['fit','camp','work','uber','okta','lyft','tgt','cost','irbt','chtr','nflx','txn','nvda','f','amd','ba','avav','amba','nete','riot','intc','ingn','ibm','aapl','siri','amzn','goog','mwa','gm','watt','cohr','a','amat','mu','tsla']
 
 for STK in stocks:
   
