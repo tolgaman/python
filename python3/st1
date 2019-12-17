@@ -1,16 +1,20 @@
 #!/usr/bin/python3
 import csv
 import urllib.request
+import os
 
 
-stocks=['fit','camp','work','uber','okta','lyft','tgt','cost','irbt','chtr','nflx','txn','nvda','f','amd','ba','avav','amba','nete','intc','ingn','ibm','aapl','siri','amzn','goog','mwa','gm','watt','cohr','a','amat','mu','tsla']
+stocks=['cohr','fit','camp','work','uber','okta','lyft','tgt','cost','irbt','chtr','nflx','txn','nvda','f','amd','ba','avav','amba','nete','intc','ingn','ibm','aapl','siri','amzn','goog','mwa','gm','watt','a','amat','mu','tsla']
+#stocks=['gld', 'slv']
 #stocks=['fit','camp','work','uber','okta','lyft','tgt','cost','irbt','chtr','nflx','txn','nvda','f','amd','ba','avav','amba','nete','riot','intc','ingn','ibm','aapl','siri','amzn','goog','mwa','gm','watt','cohr','a','amat','mu','tsla']
 
 for STK in stocks:
   
   url = f'https://www.nasdaq.com/api/v1/historical/{STK}/stocks/2009-12-15/2029-12-15'
-  STK=f'/tmp/{STK}.csv'
-  urllib.request.urlretrieve(url, STK)
+  STKfullpath=f'/tmp/{STK}.csv'
+  urllib.request.urlretrieve(url, STKfullpath)
+  if os.stat(STKfullpath).st_size < 1000:
+     stocks.remove(STK)
 
 
 
