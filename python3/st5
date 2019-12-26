@@ -1,0 +1,15 @@
+#!/usr/bin/python3
+import csv
+import urllib.request
+import os
+
+stocks=['camp','a']
+for STK in stocks:
+
+  url = f'https://www.nasdaq.com/api/v1/historical/{STK}/stocks/2009-12-15/2029-12-15'
+  STKfullpath=f'/tmp/{STK}.csv'
+  urllib.request.urlretrieve(url, STKfullpath)
+  print(os.stat(STKfullpath).st_size)
+  if os.stat(STKfullpath).st_size < 5: 
+     stocks.remove(STK)
+print(stocks)
