@@ -2,20 +2,28 @@
 import csv
 import urllib.request
 import os
-
+import os.path
 
 stocks=['cohr','fit','camp','work','uber','okta','lyft','tgt','cost','irbt','chtr','nflx','txn','nvda','f','amd','ba','avav','amba','nete','intc','ingn','ibm','aapl','siri','amzn','goog','mwa','gm','watt','a','amat','mu','tsla']
+#stocks=['cohr','fit','camp','work','uber','okta','lyft','tgt','cost','irbt','chtr','nflx','txn','nvda','f','amd','ba','avav','amba','nete','intc','ingn','ibm','aapl','siri','mwa','gm','watt','a','amat','tsla']
 #stocks=['gld', 'slv']
 #stocks=['fit','camp','work','uber','okta','lyft','tgt','cost','irbt','chtr','nflx','txn','nvda','f','amd','ba','avav','amba','nete','riot','intc','ingn','ibm','aapl','siri','amzn','goog','mwa','gm','watt','cohr','a','amat','mu','tsla']
 
 for STK in stocks:
   
   url = f'https://www.nasdaq.com/api/v1/historical/{STK}/stocks/2009-12-15/2029-12-15'
+
+
   STKfullpath=f'/tmp/{STK}.csv'
   urllib.request.urlretrieve(url, STKfullpath)
-  if os.stat(STKfullpath).st_size < 1000:
-     stocks.remove(STK)
 
+for STK in stocks:
+  if os.path.exists(STKfullpath):
+    if os.stat(STKfullpath).st_size < 1000:
+      stocks.remove(STK)
+  else:
+    stocks.remove(STK)
+print("LALA", stocks)
 
 
 for STK in stocks:
@@ -35,25 +43,27 @@ for STK in stocks:
   dircount=[]
   for i in csvlist:
     P.append(float(i[1].replace('$','')))
-  print(f"Average Price: { round((sum(P) / len(P)),2) } ")
-
-###  for i in csvlist:
-###    V.append(float(i[2].replace('$','')))
-###  print(f"Average Volume: { round(sum(V) / len(V),2) } ")
+#####  print(f"Average Price: { round((sum(P) / len(P)),2) } ")
 
   for i in csvlist:
+    if i[2] == ' N/A':
+      i[2] = '0'
+    V.append(float(i[2].replace('$','')))
+#####  print(f"Average Volume: { round((sum(V) / len(V)),2) } ")
+  
+  for i in csvlist:
     O.append(float(i[3].replace('$','')))
-  print(f"Average Open: { round(sum(O) / len(O),2) } ")
+#####  print(f"Average Open: { round(sum(O) / len(O),2) } ")
 
 
   for i in csvlist:
     H.append(float(i[4].replace('$','')))
-  print(f"Average High: { round(sum(H) / len(H),2) } ")
+#####  print(f"Average High: { round(sum(H) / len(H),2) } ")
 
 
   for i in csvlist:
     L.append(float(i[5].replace('$','')))
-  print(f"Average Low: { round(sum(L) / len(L),2) } ")
+#####  print(f"Average Low: { round(sum(L) / len(L),2) } ")
 
 
   for i in range(0, len(P)):
@@ -75,9 +85,10 @@ for STK in stocks:
     else:
       dircount.append(0)
       
-    N.append([P[i],direction[i],dircount[i]])  
+#    N.append([P[i],direction[i],dircount[i]])  
+    N.append([P[i],direction[i],dircount[i],V[i]])
 
-  print(N)
+#####  print(N)
 
   STKCIKTI = f'{STK}cikti.csv'
   myfile = open(STKCIKTI, 'w')
@@ -96,5 +107,5 @@ for STK in stocks:
 #for ro in csvlist:
 #  print(ro)
 #print(len(csvlist))
-  for i in stocks:
-    print(i)
+###  for i in stocks:
+###    print(i)

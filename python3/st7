@@ -4,10 +4,10 @@ import urllib.request
 import os
 
 
-#stocks=['cohr','fit','camp','work','uber','okta','lyft','tgt','cost','irbt','chtr','nflx','txn','nvda','f','amd','ba','avav','amba','nete','intc','ingn','ibm','aapl','siri','amzn','goog','mwa','gm','watt','a','amat','mu','tsla']
+stocks=['cohr','fit','camp','work','uber','okta','lyft','tgt','cost','irbt','chtr','nflx','txn','nvda','f','amd','ba','avav','amba','nete','intc','ingn','ibm','aapl','siri','amzn','goog','mwa','gm','watt','a','amat','mu','tsla']
 #stocks=['gld', 'slv']
 #stocks=['fit','camp','work','uber','okta','lyft','tgt','cost','irbt','chtr','nflx','txn','nvda','f','amd','ba','avav','amba','nete','riot','intc','ingn','ibm','aapl','siri','amzn','goog','mwa','gm','watt','cohr','a','amat','mu','tsla']
-stocks = ['nete','camp']
+#stocks = ['nete','camp']
 
 for STK in stocks:
   
