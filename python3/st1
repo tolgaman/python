@@ -21,8 +21,10 @@ for STK in stocks:
   if os.path.exists(STKfullpath):
     if os.stat(STKfullpath).st_size < 1000:
       stocks.remove(STK)
+      print(STK,":removed")
   else:
     stocks.remove(STK)
+    print(STK,":removed")
 print("LALA", stocks)
 
 
