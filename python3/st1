@@ -9,6 +9,8 @@ stocks=['cohr','fit','camp','work','uber','okta','lyft','tgt','cost','irbt','cht
 #stocks=['gld', 'slv']
 #stocks=['fit','camp','work','uber','okta','lyft','tgt','cost','irbt','chtr','nflx','txn','nvda','f','amd','ba','avav','amba','nete','riot','intc','ingn','ibm','aapl','siri','amzn','goog','mwa','gm','watt','cohr','a','amat','mu','tsla']
 
+stocks_w_d=[]
+
 for STK in stocks:
   
   url = f'https://www.nasdaq.com/api/v1/historical/{STK}/stocks/2009-12-15/2029-12-15'
@@ -29,8 +31,8 @@ print("LALA", stocks)
 
 
 for STK in stocks:
-  STK=f'/tmp/{STK}.csv'
-  csvfile = open(STK)
+  STKpa=f'/tmp/{STK}.csv'
+  csvfile = open(STKpa)
   csvdata = csv.reader(csvfile)
   csvlist = list(csvdata)
   csvlist.pop(0)
@@ -89,15 +91,21 @@ for STK in stocks:
       
 #    N.append([P[i],direction[i],dircount[i]])  
     N.append([P[i],direction[i],dircount[i],V[i]])
+    
+  print(STK,N[len(N)-1][2])
+  stocks_w_d.append([STK,N[len(N)-1][2]])
 
-#####  print(N)
-
-  STKCIKTI = f'{STK}cikti.csv'
+  STKCIKTI = f'{STKpa}cikti.csv'
   myfile = open(STKCIKTI, 'w')
   with myfile:
     writer = csv.writer(myfile)
     writer.writerows(N)
 
+STK_w_d=f'/tmp/all.csv'
+myfile2 = open(STK_w_d, 'w')
+with myfile2:
+  writer = csv.writer(myfile2)
+  writer.writerows(stocks_w_d)
 
 ###for j in range(0, len(P)):
 ###  print(P[j])
