@@ -1,0 +1,9 @@
+#!/usr/bin/python3
+
+from getpass import getpass
+
+username = input('Username: ')
+password = getpass('Password: ')
+
+print('Logging In...')
+
