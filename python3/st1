@@ -92,8 +92,8 @@ for STK in stocks:
 #    N.append([P[i],direction[i],dircount[i]])  
     N.append([P[i],direction[i],dircount[i],V[i]])
     
-  print(STK,N[len(N)-1][2])
-  stocks_w_d.append([STK,N[len(N)-1][2]])
+#####  print(STK,N[len(N)-1][2])
+#####  stocks_w_d.append([STK,N[len(N)-1][2]])
 
   STKCIKTI = f'{STKpa}cikti.csv'
   myfile = open(STKCIKTI, 'w')

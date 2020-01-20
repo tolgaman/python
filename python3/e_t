@@ -1,0 +1,37 @@
+#!/usr/bin/python
+import re
+
+Dizi = [ "Eleman1", "Eleman2", "Eleman3" ]
+
+"""
+for i in longlist:
+  if re.match(r'^...', i)
+yet define the regex once and use the pattern:
+
+p = re.compile(r'^...')
+for i in longlist:
+  if p.match(i)
+"""
+
+regex1 = re.compile(r'Ele[a-z]+[1-2]$')
+regex2 = re.compile(r'(Eleman1) (Eleman2)$')
+###regex1 = re.compile(r'Ele[a-z]+[1-2]$')
+
+for i in Dizi:
+    if regex1.match(i):
+       print(i)
+
+m = re.search(regex1, "Eleman1 Eleman2")
+print("Regex1 group0")
+print(m.group(0))
+
+m = re.search(regex2, "Eleman1 Eleman2")
+print("Regex2 group0")
+print(m.group(0))
+print(m.group(0), m.group(1))
+print(m.group(0), m.group(1), m.group(2))
+
+regex3 = re.compile(r'^[a-z0-9]+(Ali)[a-z]+(Veli)$')
+m = re.search(regex3, "aaasaasasasasaaAlisddssdsdsdsdsdVeli")
+print(m.group(1), m.group(2), m.group(0))
+
