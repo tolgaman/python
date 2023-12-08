@@ -24,6 +24,12 @@ print(len(data_array))
 
 print(data_array[2]['Date'])  
 
+RAISE_TOTAL      = 0
+FRIDAY_GAIN      = 0
+THURSDAY_GAIN    = 0
+WEDNESDAY_GAIN   = 0
+TUESDAY_GAIN  = 0
+MONDAY_GAIN      = 0
 for i in range(1,len(data_array)):
      
 ###   print(data_array[i]['Date'], datetime.strptime(data_array[i]['Date'],'%Y-%m-%d').strftime('%A'), data_array[i]['Open'], data_array[i]['Volume'])
@@ -34,4 +40,29 @@ for i in range(1,len(data_array)):
    else:
        RAISE = -1
 
-   print(data_array[i]['Date'], datetime.strptime(data_array[i]['Date'],'%Y-%m-%d').strftime('%A'), data_array[i]['Open'], data_array[i]['Volume'], RAISE)
+   RAISE_TOTAL = RAISE_TOTAL + RAISE
+
+   DAY_OF_WEEK = datetime.strptime(data_array[i]['Date'],'%Y-%m-%d').strftime('%A')
+
+   if (DAY_OF_WEEK  == 'Friday'):
+       FRIDAY_GAIN = FRIDAY_GAIN + RAISE
+   elif (DAY_OF_WEEK == 'Thursday'):
+       THURSDAY_GAIN = THURSDAY_GAIN + RAISE
+   elif (DAY_OF_WEEK == 'Wednesday'):
+       WEDNESDAY_GAIN = WEDNESDAY_GAIN + RAISE
+   elif (DAY_OF_WEEK == 'Tuesday'):
+       TUESDAY_GAIN = TUESDAY_GAIN + RAISE
+   else:
+       MONDAY_GAIN = MONDAY_GAIN + RAISE
+   
+
+   print(data_array[i]['Date'], DAY_OF_WEEK, data_array[i]['Open'], data_array[i]['Volume'], RAISE)
+#   print(data_array[i]['Date'], datetime.strptime(data_array[i]['Date'],'%Y-%m-%d').strftime('%A'), data_array[i]['Open'], data_array[i]['Volume'], RAISE)
+
+print("RAISE TOTAL: ", RAISE_TOTAL)
+print("FRIDAY GAIN: ", FRIDAY_GAIN)
+print("Thursday GAIN: ", THURSDAY_GAIN)
+print("Wednesday Gain: ", WEDNESDAY_GAIN)
+print("Tuesday Gain: ", TUESDAY_GAIN)
+print("Monday Gain: ", MONDAY_GAIN)
+
