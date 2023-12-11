@@ -1,5 +1,8 @@
-#!/home/linuxbrew/.linuxbrew/bin/python3
-##sppecify the file path
+#!/usr/bin/python3
+
+
+####!/home/linuxbrew/.linuxbrew/bin/python3
+##specify the file path
 import csv
 from datetime import datetime
 csv_file_path = '/home/tolga.ozaltin/pypy/scripts/r'
@@ -18,7 +21,7 @@ with open(csv_file_path, 'r') as file:
 # Print or process the data array
 for row in data_array:
 ##    print(row['Date'], row['Open'], row['Volume'])
-    print(row['Date'], datetime.strptime(row['Date'],'%Y-%m-%d').strftime('%A'), row['Open'], row['Volume'])
+    print(row['Date'], datetime.strptime(row['Date'],'%Y-%m-%d').strftime('%A'), row['Close'], row['Volume'])
 
 print(len(data_array))
 
@@ -65,4 +68,7 @@ print("Thursday GAIN: ", THURSDAY_GAIN)
 print("Wednesday Gain: ", WEDNESDAY_GAIN)
 print("Tuesday Gain: ", TUESDAY_GAIN)
 print("Monday Gain: ", MONDAY_GAIN)
+print("Yearly gain%: " , 100*((float(data_array[-1]['Close'])-float(data_array[0]['Close']))/float(data_array[0]['Close'])) )
+print(float(data_array[-1]['Close']))
+print(float(data_array[0]['Close']))
 
