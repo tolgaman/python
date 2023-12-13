@@ -1,5 +1,7 @@
 #!/usr/bin/bash
 
-wget --user-agent=Mozilla/5.0 "https://query1.finance.yahoo.com/v7/finance/download/$1?period1=1670533578&period2=1702069578&interval=1d&events=history&includeAdjustedClose=true" -O /home/tolga.ozaltin/pypy/scripts/r
+##wget --user-agent=Mozilla/5.0 "https://query1.finance.yahoo.com/v7/finance/download/$1?period1=1670533578&period2=1702069578&interval=1d&events=history&includeAdjustedClose=true" -O /home/tolga.ozaltin/pypy/scripts/r
+##wget --user-agent=Mozilla/5.0 "https://query1.finance.yahoo.com/v7/finance/download/$1?period1=1670782902&period2=1702318902&interval=1d&events=history&includeAdjustedClose=true" -O /home/tolga.ozaltin/pypy/scripts/r
+wget --user-agent=Mozilla/5.0 "https://query1.finance.yahoo.com/v7/finance/download/$1?period1=1670951943&period2=1702487943&interval=1d&events=history&includeAdjustedClose=true" -O /home/tolga.ozaltin/pypy/scripts/r
 
 ./p4

@@ -59,7 +59,7 @@ for i in range(1,len(data_array)):
        MONDAY_GAIN = MONDAY_GAIN + RAISE
    
 
-   print(data_array[i]['Date'], DAY_OF_WEEK, data_array[i]['Open'], data_array[i]['Volume'], RAISE)
+   print(data_array[i]['Date'], DAY_OF_WEEK, data_array[i]['Close'], data_array[i]['Volume'], RAISE)
 #   print(data_array[i]['Date'], datetime.strptime(data_array[i]['Date'],'%Y-%m-%d').strftime('%A'), data_array[i]['Open'], data_array[i]['Volume'], RAISE)
 
 print("RAISE TOTAL: ", RAISE_TOTAL)
